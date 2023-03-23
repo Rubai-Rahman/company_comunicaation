@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { XIcon as Icon } from "@heroicons/react/solid";
+import {BiConfused} from 'react-icons/bi'
 
 type SidebarItem ={
   label: string;
@@ -46,11 +46,11 @@ const Sidebar = () => {
       >
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
-            <Icon className="h-8 w-8" name="logo" />
+            <BiConfused className="h-8 w-8" name="logo" />
             {isOpen && <span className="text-lg font-bold">Admin Panel</span>}
           </div>
           <button onClick={toggleMenu}>
-            <Icon className="h-6 w-6" name={isOpen ? "x" : "menu"} />
+            <BiConfused className="h-6 w-6" name={isOpen ? "x" : "menu"} />
           </button>
         </div>
         <nav className="flex-grow pb-4 pr-4">
@@ -62,7 +62,7 @@ const Sidebar = () => {
                 router.pathname === item.route ? "bg-gray-900" : ""
               } flex items-center py-2 px-4 text-gray-400 hover:text-white hover:bg-gray-700`}
             >
-              <Icon className="h-5 w-5" name={item.icon} />
+              <BiConfused className="h-5 w-5" name={item.icon} />
               {isOpen && <span className="ml-4">{item.label}</span>}
             </a>
           ))}
