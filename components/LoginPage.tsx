@@ -1,21 +1,28 @@
+import { signIn } from "next-auth/react";
 import { useState } from "react";
-interface IUser{
-    email?: string 
-    password?:string
-  }
+interface IUser {
+  email?: string;
+  password?: string;
+}
 const Login = () => {
   const [user, setUser] = useState<IUser>({
-    email: '',
-    password:'',
-  })
-  
+    email: "",
+    password: "",
+  });
+
   const onChangeHandler = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
     setUser({ ...user, [name]: value });
   };
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(user);
+    const res = await signIn("credentials", {
+      email: user.email,
+      password: user.password,
+      redirect: true,
+      callbackUrl:'/dashboard'
+    });
+    console.log(res);
   };
 
   return (

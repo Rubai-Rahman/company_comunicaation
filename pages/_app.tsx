@@ -1,7 +1,8 @@
 import { SessionProvider } from "next-auth/react";
 import { ReactQueryDevtools } from "react-query/devtools";
-import { QueryClient, QueryClientProvider } from "react-query";
 import "../styles/globals.css";
+import { QueryClient, QueryClientProvider } from "react-query";
+import Layout from "@/components/Layout";
 
 export default function App({
   Component,
@@ -11,7 +12,9 @@ export default function App({
   return (
     <QueryClientProvider client={queryClient}>
       <SessionProvider session={session}>
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </SessionProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

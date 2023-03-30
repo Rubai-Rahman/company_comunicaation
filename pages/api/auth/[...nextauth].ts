@@ -1,15 +1,108 @@
-import NextAuth from "next-auth";
-import GithubProvider from "next-auth/providers/github";
-
-export const authOptions = {
-  // Configure one or more authentication providers
+import NextAuth, { NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import Jwt from "jsonwebtoken";
+import axios from "axios";
+const authOptions: NextAuthOptions = {
+  session: {
+    strategy: "jwt",
+  },
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID,
-      clientSecret: process.env.GITHUB_SECRET,
-    }),
-    // ...add more providers here
-  ],
-};
+    CredentialsProvider({
+      type: "credentials",
+      credentials: {},
 
+      async authorize(credentials: any, req: any): Promise<any> {
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
+        //console.log("email", email, "password", password);
+        //perform your login logic here
+        //find out user from db
+        const hasuraEndPoint: any = process.env.HASURA_PROJECT_ENDPOINT;
+        const hasuraSecret: any = process.env.HASURA_ADMIN_SECRET;
+        const { data: result }: any = await axios.post(
+          hasuraEndPoint,
+          {
+            query: `
+              query MyQuery {
+                users {
+                  name,
+                  email,
+                  password,
+                  role,id
+                  
+                }
+              }
+          `,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              "x-hasura-admin-secret": hasuraSecret,
+            },
+          }
+        );
+        const user = result.data.users.find(
+          (user: any) => user.email === credentials.email
+        );
+        // console.log(existEmail);
+        if (!user) {
+          throw new Error("No user found");
+        }
+        //console.log(credentials.email, credentials.password);
+        const validPassword = user.password == credentials.password;
+        // console.log(validPassword);
+        if (!validPassword) {
+          throw new Error("Incorrect Password");
+        }
+        //if everything is fine
+        // console.log("user", user);
+        return user;
+      },
+    }),
+  ],
+  callbacks: {
+    // Add the required Hasura claims
+    // https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt/#the-spec
+
+    // Add user ID to the session
+
+    async jwt({ token, user }) {
+      console.log(user);
+      return {
+        ...token,...user,
+        "https://hasura.io/jwt/claims": {
+          "x-hasura-allowed-roles": ["manager","member","admin"],
+          "x-hasura-default-role": token.role,
+          "x-hasura-role": token.role,
+          "x-hasura-user-id": token.sub,
+        },
+      };
+    },
+    session: async ({ session, token }: any) => {
+      // console.log("token", token);
+      const encodedToken = await Jwt.sign(
+        token,
+
+        "1f155e974f2aa563d0e4374becd4abbc",
+        {
+          algorithm: "HS256",
+        }
+      );
+      //console.log(encodedToken);
+      if (session?.user) {
+        //console.log("user Exist");
+        session.user.id = token.sub!;
+        session.jwtToken = encodedToken;
+      }
+      // console.log("sesson", session);
+      return session;
+    },
+  },
+
+  pages: {
+    signIn: "/",
+  },
+};
 export default NextAuth(authOptions);
