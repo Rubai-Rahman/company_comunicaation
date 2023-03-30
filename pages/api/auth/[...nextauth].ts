@@ -21,6 +21,7 @@ const authOptions: NextAuthOptions = {
         //find out user from db
         const hasuraEndPoint: any = process.env.HASURA_PROJECT_ENDPOINT;
         const hasuraSecret: any = process.env.HASURA_ADMIN_SECRET;
+        const authsecret: any = process.env.NEXT_AUTH_SECRET;
         const { data: result }: any = await axios.post(
           hasuraEndPoint,
           {
@@ -85,7 +86,7 @@ const authOptions: NextAuthOptions = {
       const encodedToken = await Jwt.sign(
         token,
 
-        "1f155e974f2aa563d0e4374becd4abbc",
+        process.env.NEXT_AUTH_SECRET as string,
         {
           algorithm: "HS256",
         }
