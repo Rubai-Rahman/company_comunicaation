@@ -6,13 +6,19 @@ import React from "react";
 // import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
+import setAxios from "@/utils/setAxios";
+import handleToken from "@/utils/handleToken";
 function Layout({ children }: any) {
-  // const session = useSession();
-  // if (session.data && session.status === "authenticated") {
-  //   setAxios(session.data.accessToken as string);
-  // } else {
-  //   setAxios(null);
-  // }
+ const session: any = useSession();
+ 
+  if (session.data && session.status === "authenticated") {
+    const Token = session.data.jwtToken;
+    handleToken(Token); 
+    setAxios(session.data.jwtToken as string);
+    
+  } else {
+    setAxios(null);
+  }
   const router = useRouter();
   if (
     router.pathname === "/" ||

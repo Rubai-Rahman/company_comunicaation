@@ -1,4 +1,6 @@
+import handleToken from "@/utils/handleToken";
 import axiosInstance from "@/utils/hasuraSetup";
+import { getSession, useSession } from "next-auth/react";
 import { useState } from "react";
 import { useMutation } from "react-query";
 //import { useCreateUser } from "@/hooks/useCreateUser";
@@ -7,6 +9,7 @@ interface User {
   email: string;
   role: string;
 }
+
 const MUTATION_QUERY = `
   mutation AddUser($user: users_insert_input!) {
     insert_users_one(object: $user) {
@@ -14,25 +17,32 @@ const MUTATION_QUERY = `
     }
   }
 `;
-
-const addUser = async ({ user }: { user: User }) => {
+const session: any = getSession();
+console.log("getSession", session);
+console.log("alalalal");
+const addUser = async (user: { user: User }) => {
   const { data } = await axiosInstance.post("", {
+    headers: {
+      authorization: `Bearer{}`,
+    },
     query: MUTATION_QUERY,
-    variables: { user },
+    variables: user,
   });
   return data;
- 
 };
 
 const CreateUserPage = () => {
+  const { data: session } = useSession();
+
   const [user, setUser] = useState<User>({
     name: "",
     email: "",
     role: "member",
   });
-  const { mutate, isLoading,data } = useMutation(addUser, {
-    onSuccess: () => {""
-      console.log("success Data",data);
+  const { mutate, isLoading, data } = useMutation(addUser, {
+    onSuccess: () => {
+      ("");
+      console.log("success Data", data);
       setUser({ email: "", name: "", role: "" });
     },
   });
