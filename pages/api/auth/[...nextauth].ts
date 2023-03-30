@@ -73,7 +73,7 @@ const authOptions: NextAuthOptions = {
       return {
         ...token,...user,
         "https://hasura.io/jwt/claims": {
-          "x-hasura-allowed-roles": ["manager","member","admin"],
+          "x-hasura-allowed-roles": ["manager","administrator","member",],
           "x-hasura-default-role": token.role,
           "x-hasura-role": token.role,
           "x-hasura-user-id": token.sub,

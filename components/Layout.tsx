@@ -5,6 +5,7 @@ import React from "react";
 // import Footer from "./Footer";
 // import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
+import Navbar from "./Navbar";
 function Layout({ children }: any) {
   // const session = useSession();
   // if (session.data && session.status === "authenticated") {
@@ -29,7 +30,7 @@ function Layout({ children }: any) {
       <div className="flex-grow">
         {/* Navbar */}
         <nav className="bg-gray-200 p-4">
-          <h2>Navbar</h2>
+          <Navbar/>
         </nav>
         {/* Page content */}
         <div className="">{children}</div>

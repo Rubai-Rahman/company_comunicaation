@@ -25,7 +25,12 @@ const sidebarItems: SidebarItem[] = [
     route: "/addnewuser",
   },
   {
-    label: "Settings",
+    label: "RemoveUser",
+    icon: "cog",
+    route: "/settings",
+  },
+  {
+    label: "EditUser",
     icon: "cog",
     route: "/settings",
   },
@@ -44,7 +49,7 @@ const Sidebar = () => {
           isOpen ? "w-64" : "w-16"
         } bg-gray-800 text-white flex flex-col transition-all duration-500`}
       >
-        c
+        
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-2">
             <BiConfused className="h-8 w-8" name="logo" />
