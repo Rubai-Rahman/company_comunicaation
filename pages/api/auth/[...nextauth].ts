@@ -19,11 +19,11 @@ const authOptions: NextAuthOptions = {
         //console.log("email", email, "password", password);
         //perform your login logic here
         //find out user from db
-        const hasuraEndPoint: any = process.env.HASURA_PROJECT_ENDPOINT;
-        const hasuraSecret: any = process.env.HASURA_ADMIN_SECRET;
-        const authsecret: any = process.env.NEXT_AUTH_SECRET;
+        // const hasuraEndPoint: any = process.env.HASURA_PROJECT_ENDPOINT;
+        // const hasuraSecret: any = process.env.HASURA_ADMIN_SECRET;
+        // const authsecret: any = process.env.NEXT_AUTH_SECRET;
         const { data: result }: any = await axios.post(
-          hasuraEndPoint,
+          process.env.hasuraEndPoint as string,
           {
             query: `
               query MyQuery {
@@ -40,7 +40,7 @@ const authOptions: NextAuthOptions = {
           {
             headers: {
               "Content-Type": "application/json",
-              "x-hasura-admin-secret": hasuraSecret,
+              "x-hasura-admin-secret": process.env.hasuraSecret,
             },
           }
         );
@@ -63,6 +63,7 @@ const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  
   callbacks: {
     // Add the required Hasura claims
     // https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt/#the-spec
@@ -70,6 +71,7 @@ const authOptions: NextAuthOptions = {
     // Add user ID to the session
 
     async jwt({ token, user }) {
+     // console.log(process.env);
       console.log(user);
       return {
         ...token,...user,
@@ -86,7 +88,7 @@ const authOptions: NextAuthOptions = {
       const encodedToken = await Jwt.sign(
         token,
 
-        process.env.NEXT_AUTH_SECRET as string,
+        process.env.nextauthSecret as string,
         {
           algorithm: "HS256",
         }
