@@ -34,6 +34,11 @@ const sidebarItems: SidebarItem[] = [
     icon: "cog",
     route: "/settings",
   },
+  {
+    label: "Create Team",
+    icon: "cog",
+    route: "/createteam",
+  },
 ];
 
 const Sidebar = () => {

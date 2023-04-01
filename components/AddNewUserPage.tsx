@@ -1,17 +1,18 @@
-import axiosInstance from "@/utils/hasuraSetup";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
 import { useState } from "react";
-import { isError, useMutation } from "react-query";
+import { useMutation } from "react-query";
 //import { useCreateUser } from "@/hooks/useCreateUser";
 type User = {
   name: string;
   email: string;
   role: string;
+  password: string;
 };
 const baseURL: any = process.env.hasuraEndPoint;
 const hasurasecret: any = process.env.hasuraSecret;
+
 const CreateUserPage = () => {
   const { data: session }: any = useSession();
   let token = session?.jwtToken;
@@ -19,8 +20,9 @@ const CreateUserPage = () => {
     name: "",
     email: "",
     role: "member",
+    password: "1234",
   });
-  const { mutate, isLoading, isSuccess, isError, error } = useMutation(
+  const { mutate, isLoading, isSuccess } = useMutation(
     (data: User) => {
       return axios.post(
         baseURL,
@@ -40,22 +42,27 @@ const CreateUserPage = () => {
           headers: {
             "Content-Type": "application/json",
             "x-hasura-admin-secret": hasurasecret,
-            "authorization": `Bearer ${token}`,
+            authorization: `Bearer ${token}`,
           },
         }
       );
+    },
+    {
+      onSuccess: (data) => {
+        setUser({
+          name: "",
+          email: "",
+          role: "member",
+          password: "1234",
+        });
+        alert("User Added Successfully");
+        console.log("Response data:", data.data);
+      },
     }
   );
-  if (isSuccess) {
-    console.log("User Added Successfully");
-  }
-  if (isError) {
-    console.log("error Ocurd ");
-  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log(user);
     await mutate(user);
   };
   return (
