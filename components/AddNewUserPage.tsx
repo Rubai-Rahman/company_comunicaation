@@ -1,9 +1,9 @@
 import axios from "axios";
 import { useSession } from "next-auth/react";
-
 import { useState } from "react";
 import { useMutation } from "react-query";
-//import { useCreateUser } from "@/hooks/useCreateUser";
+
+
 type User = {
   name: string;
   email: string;

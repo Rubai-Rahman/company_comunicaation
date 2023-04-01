@@ -3,7 +3,7 @@ import React from "react";
 import axiosInstance from "@/utils/hasuraSetup";
 
 const AllUserPage = () => {
-  const { isLoading, error, data } = useQuery("MyQuery", async () => {
+  const { isLoading, data } = useQuery("MyQuery", async () => {
     const query = `
               query  {
                 users {
