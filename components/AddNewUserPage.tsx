@@ -1,56 +1,62 @@
-import handleToken from "@/utils/handleToken";
 import axiosInstance from "@/utils/hasuraSetup";
-import { getSession, useSession } from "next-auth/react";
+import axios from "axios";
+import { useSession } from "next-auth/react";
+
 import { useState } from "react";
-import { useMutation } from "react-query";
+import { isError, useMutation } from "react-query";
 //import { useCreateUser } from "@/hooks/useCreateUser";
-interface User {
+type User = {
   name: string;
   email: string;
   role: string;
-}
-
-const MUTATION_QUERY = `
-  mutation AddUser($user: users_insert_input!) {
-    insert_users_one(object: $user) {
-      id,role,email
-    }
-  }
-`;
-const session: any = getSession();
-console.log("getSession", session);
-console.log("alalalal");
-const addUser = async (user: { user: User }) => {
-  const { data } = await axiosInstance.post("", {
-    headers: {
-      authorization: `Bearer{}`,
-    },
-    query: MUTATION_QUERY,
-    variables: user,
-  });
-  return data;
 };
-
+const baseURL: any = process.env.hasuraEndPoint;
+const hasurasecret: any = process.env.hasuraSecret;
 const CreateUserPage = () => {
-  const { data: session } = useSession();
-
+  const { data: session }: any = useSession();
+  let token = session?.jwtToken;
   const [user, setUser] = useState<User>({
     name: "",
     email: "",
     role: "member",
   });
-  const { mutate, isLoading, data } = useMutation(addUser, {
-    onSuccess: () => {
-      ("");
-      console.log("success Data", data);
-      setUser({ email: "", name: "", role: "" });
-    },
-  });
+  const { mutate, isLoading, isSuccess, isError, error } = useMutation(
+    (data: User) => {
+      return axios.post(
+        baseURL,
+        {
+          query: `
+  mutation AddUser($user: users_insert_input!) {
+    insert_users_one(object: $user) {
+      id,role,email
+    }
+  }
+`,
+          variables: {
+            user,
+          },
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-hasura-admin-secret": hasurasecret,
+            "authorization": `Bearer ${token}`,
+          },
+        }
+      );
+    }
+  );
+  if (isSuccess) {
+    console.log("User Added Successfully");
+  }
+  if (isError) {
+    console.log("error Ocurd ");
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     console.log(user);
-    await mutate({ user });
+    await mutate(user);
   };
   return (
     <div className="max-w-xl mx-auto">

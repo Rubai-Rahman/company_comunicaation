@@ -7,13 +7,13 @@ import React from "react";
 import Sidebar from "./Sidebar";
 import Navbar from "./Navbar";
 import setAxios from "@/utils/setAxios";
-import handleToken from "@/utils/handleToken";
+
 function Layout({ children }: any) {
  const session: any = useSession();
  
   if (session.data && session.status === "authenticated") {
     const Token = session.data.jwtToken;
-    handleToken(Token); 
+   
     setAxios(session.data.jwtToken as string);
     
   } else {

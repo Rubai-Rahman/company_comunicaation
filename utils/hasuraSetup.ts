@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 const baseURL = process.env.hasuraEndPoint;
 
@@ -7,7 +8,6 @@ const hasurasecret: any = process.env.hasuraSecret;
 const axiosInstance = axios.create({
   baseURL,
   headers: {
-   
     "Content-Type": "application/json",
     "x-hasura-admin-secret": hasurasecret,
   },
