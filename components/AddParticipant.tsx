@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 type User = {
   name: string;
   team_id: string | number;
-  email: string;
+  user_id: string | number;
 };
 const baseURL: any = process.env.hasuraEndPoint;
 const hasurasecret: any = process.env.hasuraSecret;
@@ -37,11 +37,12 @@ const AddParticipant = () => {
   const router = useRouter();
   const { id }: any = router.query;
   const { data: session }: any = useSession();
+  let user_id = session?.user?.id;
   let token = session?.jwtToken;
   const [member, setMember] = useState<User>({
     name: "",
     team_id: id,
-    email: "",
+    user_id: user_id,
   });
   const { mutate, isSuccess } = useMutation(
     (data: User) => {
@@ -49,9 +50,9 @@ const AddParticipant = () => {
         baseURL,
         {
           query: `
-  mutation AddTeamMember($member: members_insert_input!) {
+  mutation AddTeamMember($member: team_members_insert_input!) {
     insert_team_members_one(object: $member) {
-      team_id,name,email
+      team_id,name
     }
   }
 `,
@@ -72,8 +73,8 @@ const AddParticipant = () => {
       onSuccess: (data) => {
         setMember({
           name: "",
-          team_id: "",
-          email: "",
+          team_id: id,
+          user_id: user_id,
         });
         alert("User Added Successfully");
         console.log("Response data:", data.data);
@@ -83,15 +84,9 @@ const AddParticipant = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const selectedUser = data?.find((item: any) => item.name === member.name);
-    if (selectedUser) {
-      setMember((prevMember) => ({
-        ...prevMember,
-        email: selectedUser.email,
-      }));
-    }
+
+    await mutate(member);
     console.log("newMember", member);
-     await mutate(member);
   };
 
   return (
@@ -109,7 +104,7 @@ const AddParticipant = () => {
             onChange={(e) => setMember({ ...member, name: e.target.value })}
             className="border p-2 w-full"
           >
-            <option value="" disabled selected>
+            <option value="" disabled defaultValue="">
               Select
             </option>
             {data?.map((item: any) => (

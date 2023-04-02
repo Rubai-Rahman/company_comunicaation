@@ -33,11 +33,11 @@ const ManageTeam = () => {
     },
     {
       onSuccess: (data) => {
-        alert("Taeam Deleted ");
+        alert("Team Deleted ");
       },
     }
   );
-
+console.log(data);
   const handleDelete = (id: number) => {
     deleteTeam.mutate(id);
   };

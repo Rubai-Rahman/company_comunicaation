@@ -3,15 +3,14 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useMutation } from "react-query";
 
-
 type User = {
   name: string;
   email: string;
   role: string;
-  password: string;
+  //password: string;
 };
 const baseURL: any = process.env.hasuraEndPoint;
-const hasurasecret: any = process.env.hasuraSecret;
+//const hasurasecret: any = process.env.hasuraSecret;
 
 const CreateUserPage = () => {
   const { data: session }: any = useSession();
@@ -20,7 +19,7 @@ const CreateUserPage = () => {
     name: "",
     email: "",
     role: "member",
-    password: "1234",
+    // password: "1234",
   });
   const { mutate, isLoading, isSuccess } = useMutation(
     (data: User) => {
@@ -41,8 +40,8 @@ const CreateUserPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            "x-hasura-admin-secret": hasurasecret,
-            authorization: `Bearer ${token}`,
+            // "x-hasura-admin-secret": hasurasecret,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -53,7 +52,7 @@ const CreateUserPage = () => {
           name: "",
           email: "",
           role: "member",
-          password: "1234",
+          //password: "1234",
         });
         alert("User Added Successfully");
         console.log("Response data:", data.data);

@@ -9,6 +9,7 @@ const axiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
     "x-hasura-admin-secret": hasurasecret,
+    
   },
 });
 export const postMutation = async (mutation: any, variables: any) => {
