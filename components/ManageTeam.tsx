@@ -37,7 +37,7 @@ const ManageTeam = () => {
       },
     }
   );
-console.log(data);
+
   const handleDelete = (id: number) => {
     deleteTeam.mutate(id);
   };
@@ -46,26 +46,43 @@ console.log(data);
   }
 
   return (
-    <table className="table-auto w-full">
-      <thead>
-        <tr>
-          <th className="px-4 py-2 text-left">Name</th>
-          <th className="px-4 py-2 text-left">Add Participant </th>
-          <th className="px-4 py-2 text-left">Delete Team</th>
+    <table className="table-auto w-full border-collapse">
+      <thead className="bg-gray-800">
+        <tr className="border-collapse">
+          <th className="px-4 py-2 text-center text-white border-0">Name</th>
+          <th className="px-4 py-2 text-center text-white border-0">
+            Add Participant
+          </th>
+          <th className="px-4 py-2 text-center text-white border-0">
+            Remove Participant
+          </th>
+          <th className="px-4 py-2 text-center text-white border-0">
+            Delete Team
+          </th>
         </tr>
       </thead>
       <tbody>
         {data?.teams.map((item: any) => (
-          <tr key={item.id}>
-            <td className="border px-4 py-2">{item.name}</td>
-
-            <Link className="text-cyan-400 " href={`/team/${item.id}`}>
-              <button className="bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 hover:from-green-400 hover:via-teal-500 hover:to-blue-500 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
-                Add Participant
-              </button>
-            </Link>
-
-            <td className="border px-4 py-2 text-left">
+          <tr
+            key={item.id}
+            className="bg-gray-300 border-collapse shadow-sm mb-3  "
+          >
+            <td className="px-4 py-2 text-center text-xl ">{item.name}</td>
+            <td className="px-4 py-2 text-center">
+              <Link className="text-cyan-400" href={`/team/${item.id}`}>
+                <button className="bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 hover:from-green-400 hover:via-teal-500 hover:to-blue-500 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                  Add Participant
+                </button>
+              </Link>
+            </td>
+            <td className="px-4 py-2 text-center">
+              <Link className="text-cyan-400" href={`/team/${item.id}`}>
+                <button className="bg-gradient-to-r from-purple-700 via-pink-500 to-red-500 hover:from-green-400 hover:via-teal-500 hover:to-blue-500 text-white font-bold py-2 px-4 rounded-full transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110">
+                  Remove Participant
+                </button>
+              </Link>
+            </td>
+            <td className="px-4 py-2 text-center">
               <button
                 className="bg-gradient-to-r from-yellow-400 to-red-500 hover:from-pink-400 hover:to-purple-500 text-white font-bold py-2 px-4 rounded-md transition duration-300 ease-in-out transform hover:-translate-y-1 hover:scale-110"
                 onClick={() => handleDelete(item.id)}

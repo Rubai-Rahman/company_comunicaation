@@ -15,7 +15,7 @@ const hasurasecret: any = process.env.hasuraSecret;
 const CreateTeam = () => {
   const { data: session }: any = useSession();
   let admin = session?.user?.name;
-  console.log(admin);
+ 
   let token = session?.jwtToken;
   const [team, setTeam] = useState<TEAM>({
     name: "",

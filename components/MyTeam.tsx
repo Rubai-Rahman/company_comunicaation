@@ -36,6 +36,7 @@ const MyTeam = () => {
 
   return (
     <div className="bg-gradient-to-b from-purple-400 to-pink-500">
+      <h2>My Team</h2>
       <table className="w-full text-white rounded-lg overflow-hidden">
         <thead className="text-left text-sm">
           <tr className="bg-gradient-to-r from-green-400 to-blue-500">

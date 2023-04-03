@@ -1,4 +1,5 @@
 import AddParticipant from "@/components/AddParticipant";
+import RemoveParticipant from "@/components/RemoveParticipant";
 import { useRouter } from "next/router";
 
 export default function TeamPage() {
@@ -6,9 +7,9 @@ export default function TeamPage() {
   const { id } = router.query;
 
   return (
-    <div>
-      
+    <div className="grid align-middle   ">
       <AddParticipant />
+      <RemoveParticipant />
     </div>
   );
 }
