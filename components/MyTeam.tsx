@@ -4,7 +4,6 @@ import axiosInstance from "@/utils/hasuraSetup";
 import { useSession } from "next-auth/react";
 import TeamUsers from "./TeamUsers";
 import { format } from "date-fns";
-
 type Team = {
   id: string;
   name: string;
@@ -36,8 +35,7 @@ const MyTeam = () => {
       enabled: userId ? true : false, // enable the query if userId exists
     }
   );
- const [selectedTeam, setSelectedTeam] = useState<Team | undefined>();
-
+  const [selectedTeam, setSelectedTeam] = useState<Team | undefined>();
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -67,7 +65,10 @@ const MyTeam = () => {
                 <td className="px-4 py-3 border">{item.name}</td>
                 <td className="px-4 py-3 border">{item.admin}</td>
                 <td className="px-4 py-3 border">
-                  {format(new Date(item.created_at), "MM/dd/yyyy hh:mm:ss a")}
+                  {format(
+                    new Date(item.created_at),
+                    "MMMM dd, yyyy hh:mm:ss a"
+                  )}
                 </td>
                 <td className="px-4 py-3 border">
                   <button

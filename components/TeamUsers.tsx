@@ -26,10 +26,9 @@ const TeamUsers = ({ teamId }: any) => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
+  console.log(data);
   return (
     <div>
-      <h3>Team Users</h3>
       <ul className="grid grid-cols-2 gap-4 mx-4">
         {data?.team_members.map((member: any) => (
           <li

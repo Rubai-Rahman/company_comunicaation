@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useRouter } from "next/router";
 import { BiConfused } from "react-icons/bi";
 
@@ -37,43 +36,43 @@ const sidebarItems: SidebarItem[] = [
   },
 ];
 
-const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(true);
+type SidebarProps = {
+  isSidebarOpen: boolean;
+  setIsSidebarOpen: (isOpen: boolean) => void;
+};
+
+const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
   const router = useRouter();
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      <div
-        className={`${
-          isOpen ? "w-64" : "w-16"
-        } bg-gray-800 text-white flex flex-col transition-all duration-500`}
-      >
-        <div className="flex items-center justify-between p-4">
-          <div className="flex items-center space-x-2">
-            <BiConfused className="h-8 w-8" name="logo" />
-            {isOpen && <span className="text-lg font-bold">Admin Panel</span>}
-          </div>
-          <button onClick={toggleMenu}>
-            <BiConfused className="h-6 w-6" name={isOpen ? "x" : "menu"} />
-          </button>
+    <div className="bg-gray-800 text-white w-64 flex-none">
+      <div className="flex items-center justify-between p-4">
+        <div className="flex items-center space-x-2">
+          <BiConfused className="h-8 w-8" name="logo" />
+          {isSidebarOpen && (
+            <span className="text-lg font-bold">Admin Panel</span>
+          )}
         </div>
-        <nav className="flex-grow pb-4 pr-4">
-          {sidebarItems.map((item) => (
-            <a
-              key={item.route}
-              href={item.route}
-              className={`${
-                router.pathname === item.route ? "bg-gray-900" : ""
-              } flex items-center py-2 px-4 text-gray-400 hover:text-white hover:bg-gray-700`}
-            >
-              <BiConfused className="h-5 w-5" name={item.icon} />
-              {isOpen && <span className="ml-4">{item.label}</span>}
-            </a>
-          ))}
-        </nav>
+        <button onClick={toggleMenu}>
+          <BiConfused className="h-6 w-6" name={isSidebarOpen ? "x" : "menu"} />
+        </button>
       </div>
+      <nav className="pb-4 pr-4">
+        {sidebarItems.map((item) => (
+          <a
+            key={item.route}
+            href={item.route}
+            className={`${
+              router.pathname === item.route ? "bg-gray-900" : ""
+            } flex items-center py-2 px-4 text-gray-400 hover:text-white hover:bg-gray-700`}
+          >
+            <BiConfused className="h-5 w-5" name={item.icon} />
+            {isSidebarOpen && <span className="ml-4">{item.label}</span>}
+          </a>
+        ))}
+      </nav>
     </div>
   );
 };
