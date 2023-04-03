@@ -1,10 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-import { useQuery } from "react-query";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import axiosInstance from "@/utils/hasuraSetup";
 import { useRouter } from "next/router";
-import { Http2ServerRequest } from "http2";
 
 type TeamMember = {
   id: number;
@@ -17,7 +16,7 @@ const TeamMembers: React.FC = () => {
   const router = useRouter();
   const { id }: any = router.query;
   let teamId = id;
-  console.log(teamId);
+  const queryClient = useQueryClient();
   const { isLoading, error, data } = useQuery(
     ["MyQuery", teamId],
     async () => {
@@ -37,19 +36,77 @@ const TeamMembers: React.FC = () => {
     }
   );
 
+  const deleteMember = useMutation(
+    async (memberId: number) => {
+      const response = await axiosInstance.post("", {
+        query: `
+        mutation {
+          delete_team_members(
+            where: { id: { _eq: ${memberId} } }
+          ) {
+            affected_rows
+          }
+        }
+      `,
+      });
+
+      return response.data;
+    },
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries(["MyQuery", teamId]);
+      },
+    }
+  );
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  if (data.team_members.length <= 0) {
+  if (data?.team_members.length <= 0) {
     return <h2>This Group Does Not Have any Participant </h2>;
   }
-  console.log(data?.team_members);
+
   return (
     <div>
       <h2>Team Members:</h2>
-      <ul>
-        {data.team_members.map((member: TeamMember) => (
-          <li key={member.id}>{member.name}</li>
+      <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
+        {data?.team_members.map((member: TeamMember) => (
+          <li key={member.id} style={{ marginBottom: "10px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                border: "1px solid #ccc",
+                padding: "10px",
+                borderRadius: "5px",
+              }}
+            >
+              <span>{member.name}</span>
+              <button
+                style={{
+                  background: "#6495ED",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "9999px",
+                  padding: "5px 10px",
+                  cursor: "pointer",
+                  boxShadow: "0px 0px 0px 3px white",
+                  transition: "box-shadow 0.3s ease-in-out",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.boxShadow = "0px 0px 0px 5px #0066CC";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.boxShadow = "0px 0px 0px 3px #0066CC";
+                }}
+                onClick={() => {
+                  deleteMember.mutate(member.id);
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </li>
         ))}
       </ul>
     </div>

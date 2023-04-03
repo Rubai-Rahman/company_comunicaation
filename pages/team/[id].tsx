@@ -7,9 +7,14 @@ export default function TeamPage() {
   const { id } = router.query;
 
   return (
-    <div className="grid align-middle   ">
-      <AddParticipant />
-      <RemoveParticipant />
+    <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr",padding:"20px" }}>
+      <div className="mr-10 ">
+        {" "}
+        <RemoveParticipant />
+      </div>
+      <div>
+        <AddParticipant />
+      </div>
     </div>
   );
 }
