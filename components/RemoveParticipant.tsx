@@ -1,6 +1,3 @@
-import React, { useState } from "react";
-import axios from "axios";
-import { useSession } from "next-auth/react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import axiosInstance from "@/utils/hasuraSetup";
 import { useRouter } from "next/router";
@@ -9,8 +6,6 @@ type TeamMember = {
   id: number;
   name: string;
 };
-
-const hasurasecret: any = process.env.hasuraSecret;
 
 const TeamMembers: React.FC = () => {
   const router = useRouter();
