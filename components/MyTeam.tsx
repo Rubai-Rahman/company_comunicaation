@@ -3,7 +3,14 @@ import React, { useState } from "react";
 import axiosInstance from "@/utils/hasuraSetup";
 import { useSession } from "next-auth/react";
 import TeamUsers from "./TeamUsers";
+import { format } from "date-fns";
 
+type Team = {
+  id: string;
+  name: string;
+  created_at: string;
+  admin: boolean;
+};
 const MyTeam = () => {
   const { data: session }: any = useSession();
   let userId = session?.user?.id;
@@ -29,14 +36,15 @@ const MyTeam = () => {
       enabled: userId ? true : false, // enable the query if userId exists
     }
   );
-  const [selectedTeam, setSelectedTeam] = useState(null);
+ const [selectedTeam, setSelectedTeam] = useState<Team | undefined>();
+
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className="flex gap-5 align-middle rounded-md ">
+    <div className="flex gap-5 align-middle rounded-md  ">
       <div className="bg-gradient-to-b from-purple-400 h-1/3  ">
         <h2>My Team</h2>
         <table className="w-full text-white rounded-lg overflow-hidden">
@@ -59,7 +67,7 @@ const MyTeam = () => {
                 <td className="px-4 py-3 border">{item.name}</td>
                 <td className="px-4 py-3 border">{item.admin}</td>
                 <td className="px-4 py-3 border">
-                  {new Date(item.created_at).toLocaleString()}
+                  {format(new Date(item.created_at), "MM/dd/yyyy hh:mm:ss a")}
                 </td>
                 <td className="px-4 py-3 border">
                   <button
@@ -74,8 +82,10 @@ const MyTeam = () => {
           </tbody>
         </table>
       </div>
-      <div className="bg-gray-300 h-1/3 rounded-md   ">
-        {selectedTeam && <TeamUsers teamId={selectedTeam?.id} />}
+      <div className="bg-gray-200 h-1/3 rounded-md w-62  ">
+        {selectedTeam && selectedTeam.id && (
+          <TeamUsers teamId={selectedTeam.id} />
+        )}
       </div>
     </div>
   );

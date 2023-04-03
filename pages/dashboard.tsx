@@ -1,7 +1,7 @@
+import Chat from "@/components/Chat";
 import MyTeam from "@/components/MyTeam";
-
 import TeamUsers from "@/components/TeamUsers";
-import Chat from "@/components/chat";
+
 
 import React from "react";
 
