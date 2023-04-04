@@ -4,6 +4,7 @@ import axiosInstance from "@/utils/hasuraSetup";
 import { useSession } from "next-auth/react";
 import TeamUsers from "./TeamUsers";
 import { format } from "date-fns";
+import Chat from "./Chat";
 type Team = {
   id: string;
   name: string;
@@ -44,11 +45,10 @@ const MyTeam = () => {
   return (
     <div className="flex gap-5 align-middle rounded-md  ">
       <div className="bg-gradient-to-b from-purple-400 h-1/3  ">
-        <h2>My Team</h2>
+     
         <table className="w-full text-white rounded-lg overflow-hidden">
           <thead className="text-left text-sm">
             <tr className="bg-gradient-to-r from-green-400 to-blue-500">
-              <th className="px-4 py-3">ID</th>
               <th className="px-4 py-3">Group Name</th>
               <th className="px-4 py-3">Admin</th>
               <th className="px-4 py-3">Created At</th>
@@ -61,7 +61,6 @@ const MyTeam = () => {
                 key={item.id}
                 className="bg-gradient-to-r from-green-500 to-blue-400 hover:bg-opacity-50 transition-colors duration-500"
               >
-                <td className="px-4 py-3 border">{item.id}</td>
                 <td className="px-4 py-3 border">{item.name}</td>
                 <td className="px-4 py-3 border">{item.admin}</td>
                 <td className="px-4 py-3 border">
@@ -85,7 +84,10 @@ const MyTeam = () => {
       </div>
       <div className="bg-gray-200 h-1/3 rounded-md w-62  ">
         {selectedTeam && selectedTeam.id && (
-          <TeamUsers teamId={selectedTeam.id} />
+          <div className="flex ">
+            <TeamUsers teamId={selectedTeam.id} />
+            <Chat teamId={selectedTeam.id} />
+          </div>
         )}
       </div>
     </div>

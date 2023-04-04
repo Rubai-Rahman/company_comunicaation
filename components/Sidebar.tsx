@@ -47,7 +47,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
   const toggleMenu = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (
-    <div className="bg-gray-800 text-white w-64 flex-none">
+    <div className="bg-gray-800 text-white w-64 flex-none h-screen">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center space-x-2">
           <BiConfused className="h-8 w-8" name="logo" />

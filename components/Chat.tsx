@@ -1,55 +1,67 @@
-import React, { useState, useEffect } from "react";
-import { useQuery, useMutation, UseMutationResult } from "react-query";
+import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import axiosInstance from "@/utils/hasuraSetup";
+import axios from "axios";
+import { format } from "date-fns";
 
 type Message = {
-  id: number;
-  user_id: string;
+  team_id: number;
+  user_id: number;
   message: string;
   created_at: string;
   user: {
     name: string;
   };
 };
+const baseURL: any = process.env.hasuraEndPoint;
+const hasurasecret: any = process.env.hasuraSecret;
 
-const Chat = () => {
+const Chat = ({ teamId }: any) => {
   const { data: session }: any = useSession();
-  const router = useRouter();
-  const { team_id } = router.query;
-  const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState<Message[]>([]);
+  const queryClient = useQueryClient();
 
-  const { isLoading, data } = useQuery<Message[]>(
-    "messages",
+  let token = session?.jwtToken;
+  const team_id = teamId;
+
+  const [message, setMessage] = useState("");
+
+  //const [messages, setMessages] = useState<Message[]>([]);
+
+  //query
+  const { isLoading, data } = useQuery(
+    ["MyQuery", teamId],
     async () => {
-      const response = await axiosInstance.post("", {
-        query: `
-          query GetMessages($team_id: Int!) {
-            messages(where: { team_id: { _eq: $team_id } }) {
-              id
-              user_id
-              message
-              created_at
-              user {
-                name
-              }
-            }
-          }
-        `,
-        variables: { team_id: parseInt(team_id as string) },
-      });
-      return response.data.data.messages;
+      const query = `
+             query {
+  messages(where: {team_id: {_eq: "${teamId}"}}) {
+    message
+    user_id
+    team_id
+    created_at
+    user {
+      name
+      id
+      role}
+    
+  }
+}
+          `;
+      const response = await axiosInstance.post("", { query });
+      return response.data.data;
     },
-    { enabled: !!session }
+    {
+      enabled: teamId ? true : false,
+    }
   );
 
-  const { mutate }: any = useMutation<void, unknown, void, unknown>(
-    async () => {
-      await axiosInstance.post("", {
-        query: `
-          mutation AddMessage($message: String!, $user_id: String!, $team_id: Int!) {
+  const { mutate, isSuccess }: any = useMutation(
+    (data: Message) => {
+      return axios.post(
+        baseURL,
+        {
+          query: `
+          mutation AddMessage($message: String!, $user_id: Int!, $team_id: Int!) {
             insert_messages_one(object: { message: $message, user_id: $user_id, team_id: $team_id }) {
               id
               user_id
@@ -58,29 +70,36 @@ const Chat = () => {
             }
           }
         `,
-        variables: {
-          message,
-          user_id: session.user.id,
-          team_id: parseInt(team_id as string),
+          variables: {
+            message,
+            user_id: session?.user.id,
+            team_id: parseInt(team_id as string),
+          },
         },
-      });
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "x-hasura-admin-secret": hasurasecret,
+            authorization: `Bearer ${token}`,
+          },
+        }
+      );
     },
+
     {
       onSuccess: () => {
+        queryClient.invalidateQueries(["MyQuery", teamId]);
         setMessage("");
       },
     }
   );
-  console.log(message);
-  useEffect(() => {
-    setMessages(data || []);
-  }, [data]);
 
-  const handleSend = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSend = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    mutate(message);
+    await mutate(message);
   };
-
+  let messages = data?.messages;
+  console.log(message);
   return (
     <div className="flex flex-col h-96 border border-cyan-500 m-8 rounded-md border-spacing-8   ">
       <div className="flex-1 flex flex-col overflow-y-auto">
@@ -95,22 +114,37 @@ const Chat = () => {
             </p>
           </div>
         ) : (
-          messages.map((message) => (
-            <div
-              key={message.id}
-              className="bg-white p-4 rounded-lg shadow my-4 mx-4"
-            >
-              <div className="flex justify-between mb-2">
-                <span className="font-bold text-gray-900">
-                  {message.user.name}
-                </span>
-                <span className="text-gray-600 text-sm">
-                  {new Date(message.created_at).toLocaleString()}
-                </span>
+          messages?.map((message: any) =>
+            message?.user?.id == session?.user.id ? (
+              <div key={message.id} className=" ">
+                <p className="text-gray-800 bg-cyan-300  p-2 rounded-lg shadow my-4 mx-4">
+                  {message.message}
+                </p>
+                <div className="mb-2">
+                  <span className="font-small font-thin text-xs   text-gray-900">
+                    {message?.user?.name}
+                  </span>
+                  <span className="text-gray-600 text-xs">
+                    {format(new Date(message.created_at), " hh:mm:ss a")}
+                  </span>
+                </div>
               </div>
-              <p className="text-gray-800">{message.message}</p>
-            </div>
-          ))
+            ) : (
+              <div key={message.id} className="">
+                <p className="text-gray-800 bg-gray-300  p-2  rounded-lg shadow my-4 mx-4">
+                  {message.message}
+                </p>
+                <div className="flex justify-start">
+                  <span className="font-small font-thin text-xs   text-gray-900">
+                    {message?.user?.name}
+                  </span>
+                  <span className="text-gray-600 text-xs">
+                    {format(new Date(message.created_at), " hh:mm:ss a")}
+                  </span>
+                </div>
+              </div>
+            )
+          )
         )}
       </div>
       <form onSubmit={handleSend} className="flex bg-gray-200 p-2">

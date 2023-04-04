@@ -26,7 +26,7 @@ const TeamUsers = ({ teamId }: any) => {
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  console.log(data);
+
   return (
     <div>
       <ul className="grid grid-cols-2 gap-4 mx-4">

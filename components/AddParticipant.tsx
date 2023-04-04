@@ -64,7 +64,7 @@ const AddParticipant = () => {
           headers: {
             "Content-Type": "application/json",
             "x-hasura-admin-secret": hasurasecret,
-            authorization: `Bearer ${token}`,
+           " authorization": `Bearer ${token}`,
           },
         }
       );

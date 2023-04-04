@@ -6,12 +6,7 @@ import React from "react";
 const dashboard = () => {
   return (
     <div className="flex justify-around">
-      <div>
-        <MyTeam />
-      </div>
-      <div>
-        <Chat/>
-      </div>
+      <MyTeam />
     </div>
   );
 };
