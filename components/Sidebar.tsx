@@ -1,3 +1,4 @@
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { BiConfused } from "react-icons/bi";
 
@@ -43,6 +44,7 @@ type SidebarProps = {
 
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
   const router = useRouter();
+
 
   const toggleMenu = () => setIsSidebarOpen(!isSidebarOpen);
 
