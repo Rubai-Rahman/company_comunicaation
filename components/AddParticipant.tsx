@@ -32,10 +32,6 @@ const AddParticipant = () => {
     return response.data.data.users;
   });
 
-  console.log(users);
-  //const existMemeber= data?.find((user:any)=>console.log(user.id))
-  //set data
-
   const router = useRouter();
   const { id }: any = router.query;
   const { data: session }: any = useSession();
@@ -46,7 +42,32 @@ const AddParticipant = () => {
     team_id: id,
     user_id: "",
   });
-  const { mutate, isSuccess,data:members } = useMutation(
+  const { error, data: teamData } = useQuery(
+    ["MyQuery", id],
+    async () => {
+      const query = `
+        query {
+          team_members(where: {team_id: {_eq: "${id}"}}) {
+            id
+            name
+            user_id
+          }
+        }`;
+      const response = await axiosInstance.post("", { query });
+
+      return response.data.data;
+    },
+    {
+      enabled: id ? true : false, // enable the query if teamId exists
+    }
+  );
+  // console.log("teamData", teamData?.team_members);
+
+  const {
+    mutate,
+    isSuccess,
+    data: members,
+  } = useMutation(
     (data: User) => {
       return axios.post(
         baseURL,
@@ -96,23 +117,27 @@ const AddParticipant = () => {
       user_id: selectedUser?.id || "",
     });
   };
-console.log("members",members);
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    console.log("member",member.user_id);
-    const existMemeber = users?.find((user: any) => {
-      console.log("userid",user.id);
-      user.id == member.user_id
+    const existMember = teamData?.team_members?.find((user: any) => {
+      console.log("userId", user?.user_id);
+      return user?.user_id == member.user_id;
+      // if (user?.user_id == member.user_id) {
+      //   alert("user Exist");
+      //   return;
+      // }
+      // else {
+      //  alert("userDont exist");
+      // }
     });
-  //console.log("exist", existMemeber);
-    
-    if (existMemeber) {
-      alert("user already Exist ");
+    if (existMember) {
+      alert("user exist select another User ");
       return;
     } else {
       await mutate(member);
-    }
+    } ;
 
     console.log("newMember", member);
   };
