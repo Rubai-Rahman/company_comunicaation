@@ -16,7 +16,7 @@ const hasurasecret: any = process.env.hasuraSecret;
 
 const AddParticipant = () => {
   //get data from db
-  const { isLoading, data } = useQuery("MyQuery", async () => {
+  const { isLoading, data: users } = useQuery("MyQuery", async () => {
     const query = `
               query  {
                 users {
@@ -32,19 +32,21 @@ const AddParticipant = () => {
     return response.data.data.users;
   });
 
+  console.log(users);
+  //const existMemeber= data?.find((user:any)=>console.log(user.id))
   //set data
 
   const router = useRouter();
   const { id }: any = router.query;
   const { data: session }: any = useSession();
-  let user_id = session?.user?.id;
+
   let token = session?.jwtToken;
   const [member, setMember] = useState<User>({
     name: "",
     team_id: id,
-    user_id: user_id,
+    user_id: "",
   });
-  const { mutate, isSuccess } = useMutation(
+  const { mutate, isSuccess,data:members } = useMutation(
     (data: User) => {
       return axios.post(
         baseURL,
@@ -64,7 +66,7 @@ const AddParticipant = () => {
           headers: {
             "Content-Type": "application/json",
             "x-hasura-admin-secret": hasurasecret,
-           " authorization": `Bearer ${token}`,
+            " authorization": `Bearer ${token}`,
           },
         }
       );
@@ -74,18 +76,44 @@ const AddParticipant = () => {
         setMember({
           name: "",
           team_id: id,
-          user_id: user_id,
+          user_id: "",
         });
-        alert("User Added Successfully");
+        alert("Participant Added Successfully");
         console.log("Response data:", data.data);
       },
     }
   );
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedUserName = e.target.value;
+    const selectedUser = users?.find(
+      (user: any) => user.name === selectedUserName
+    );
+
+    setMember({
+      ...member,
+      name: selectedUserName,
+      user_id: selectedUser?.id || "",
+    });
+  };
+console.log("members",members);
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    await mutate(member);
+    console.log("member",member.user_id);
+    const existMemeber = users?.find((user: any) => {
+      console.log("userid",user.id);
+      user.id == member.user_id
+    });
+  //console.log("exist", existMemeber);
+    
+    if (existMemeber) {
+      alert("user already Exist ");
+      return;
+    } else {
+      await mutate(member);
+    }
+
     console.log("newMember", member);
   };
 
@@ -101,13 +129,13 @@ const AddParticipant = () => {
             id="name"
             name="name"
             value={member.name}
-            onChange={(e) => setMember({ ...member, name: e.target.value })}
+            onChange={handleNameChange}
             className="border p-2 w-full"
           >
             <option value="" disabled defaultValue="">
               Select
             </option>
-            {data?.map((item: any) => (
+            {users?.map((item: any) => (
               <option value={item.name} key={item.id}>
                 {item.name}
               </option>

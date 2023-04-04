@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useSession } from "next-auth/react";
 import axiosInstance from "@/utils/hasuraSetup";
@@ -20,7 +20,7 @@ const hasurasecret: any = process.env.hasuraSecret;
 const Chat = ({ teamId }: any) => {
   const { data: session }: any = useSession();
   const queryClient = useQueryClient();
-
+  const messageContainerRef = useRef<HTMLDivElement>(null);
   let token = session?.jwtToken;
   const team_id = teamId;
 
@@ -99,10 +99,18 @@ const Chat = ({ teamId }: any) => {
     await mutate(message);
   };
   let messages = data?.messages;
-  console.log(message);
+  useEffect(() => {
+    if (messageContainerRef.current) {
+      messageContainerRef.current.scrollTop =
+        messageContainerRef.current.scrollHeight;
+    }
+  }, [data, messages]);
   return (
-    <div className="flex flex-col h-96 border border-cyan-500 m-8 rounded-md border-spacing-8   ">
-      <div className="flex-1 flex flex-col overflow-y-auto">
+    <div className="flex flex-col border bg-white shadow-lg border-cyan-500  rounded-xl w-auto h-full ">
+      <div
+        className="flex-1 flex flex-col overflow-y-auto mx-3"
+        ref={messageContainerRef}
+      >
         {isLoading ? (
           <div className="flex justify-center items-center h-full">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
@@ -116,12 +124,12 @@ const Chat = ({ teamId }: any) => {
         ) : (
           messages?.map((message: any) =>
             message?.user?.id == session?.user.id ? (
-              <div key={message.id} className=" ">
-                <p className="text-gray-800 bg-cyan-300  p-2 rounded-lg shadow my-4 mx-4">
+              <div key={message.id} className="self-end ">
+                <p className="text-gray-800 bg-cyan-300 p-2 rounded-lg shadow my-4 mx-4">
                   {message.message}
                 </p>
                 <div className="mb-2">
-                  <span className="font-small font-thin text-xs   text-gray-900">
+                  <span className="font-small font-thin text-xs text-gray-900">
                     {message?.user?.name}
                   </span>
                   <span className="text-gray-600 text-xs">
@@ -130,12 +138,12 @@ const Chat = ({ teamId }: any) => {
                 </div>
               </div>
             ) : (
-              <div key={message.id} className="">
-                <p className="text-gray-800 bg-gray-300  p-2  rounded-lg shadow my-4 mx-4">
+              <div key={message.id} className="self-start">
+                <p className="text-gray-800 bg-gray-300 p-2 rounded-lg shadow my-4 mx-4">
                   {message.message}
                 </p>
-                <div className="flex justify-start">
-                  <span className="font-small font-thin text-xs   text-gray-900">
+                <div className="flex justify-start mb-2">
+                  <span className="font-small font-thin text-xs text-gray-900">
                     {message?.user?.name}
                   </span>
                   <span className="text-gray-600 text-xs">

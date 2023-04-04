@@ -28,15 +28,14 @@ const TeamUsers = ({ teamId }: any) => {
   }
 
   return (
-    <div>
+    <div className="border rounded-lg  bg bg-white shadow-lg   ">
       <ul className="grid grid-cols-2 gap-4 mx-4">
         {data?.team_members.map((member: any) => (
           <li
             key={member?.id}
-            className="p-4 rounded-lg shadow-md border border-gray-300"
+            className="p-4 rounded-lg shadow-md border m-4  border-gray-300"
           >
             <p className="font-bold text-lg">{member?.user?.name}</p>
-            <p className="text-gray-500">{member?.user?.email}</p>
           </li>
         ))}
       </ul>

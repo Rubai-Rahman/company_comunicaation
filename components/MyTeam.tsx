@@ -43,9 +43,8 @@ const MyTeam = () => {
   }
 
   return (
-    <div className="flex gap-5 align-middle rounded-md  ">
-      <div className="bg-gradient-to-b from-purple-400 h-1/3  ">
-     
+    <div className="grid grid-cols-3 gap-5 align-middle rounded-md mt-4 p-4  bg-slate-300 h-screen">
+      <div className="bg-slate-400 h-[550px]  p-4 rounded-lg  ">
         <table className="w-full text-white rounded-lg overflow-hidden">
           <thead className="text-left text-sm">
             <tr className="bg-gradient-to-r from-green-400 to-blue-500">
@@ -82,11 +81,15 @@ const MyTeam = () => {
           </tbody>
         </table>
       </div>
-      <div className="bg-gray-200 h-1/3 rounded-md w-62  ">
+      <div className="col-span-2	">
         {selectedTeam && selectedTeam.id && (
-          <div className="flex ">
-            <TeamUsers teamId={selectedTeam.id} />
-            <Chat teamId={selectedTeam.id} />
+          <div className="grid grid-cols-2 gap-4	  ">
+            <div className="bg-slate-400   p-4 rounded-lg ">
+              <TeamUsers teamId={selectedTeam.id} />
+            </div>
+            <div className="bg-slate-400 h-[550px]    p-4 rounded-lg ">
+              <Chat teamId={selectedTeam.id} />
+            </div>
           </div>
         )}
       </div>
