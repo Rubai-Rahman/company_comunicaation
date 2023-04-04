@@ -1,29 +1,13 @@
-import { useQuery } from "react-query";
 import React from "react";
-import axiosInstance from "@/utils/hasuraSetup";
+import { useUser } from "@/hooks/useUser";
 
 const AllUserPage = () => {
-  const { isLoading, data } = useQuery("MyQuery", async () => {
-    const query = `
-              query  {
-                users {
-                  name,
-                  email,
-                  password,
-                  role,id
-                  
-                }
-              }
-          `;
-    const response = await axiosInstance.post("", { query });
-    return response.data.data.users;
-  });
+
+  const { isLoading, data } = useUser();
 
   if (isLoading) {
     return <div>Loading...</div>;
   }
-
-  
 
   return (
     <table className="table-auto w-full">

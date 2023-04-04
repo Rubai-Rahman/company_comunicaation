@@ -1,3 +1,4 @@
+import { useUser } from "@/hooks/useUser";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -10,7 +11,7 @@ type User = {
   //password: string;
 };
 const baseURL: any = process.env.hasuraEndPoint;
-//const hasurasecret: any = process.env.hasuraSecret;
+const hasurasecret: any = process.env.hasuraSecret;
 
 const CreateUserPage = () => {
   const { data: session }: any = useSession();
@@ -40,7 +41,7 @@ const CreateUserPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            // "x-hasura-admin-secret": hasurasecret,
+            "x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -59,10 +60,21 @@ const CreateUserPage = () => {
       },
     }
   );
+  const { data: users } = useUser();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    const existEmail = users?.find((existUser: any) => {
+      return existUser?.email == user.email;
+    });
+    if (existEmail) {
+      alert("User Already Exist")
+      return;
+    }
+    else {
     await mutate(user);
+    }
+    
   };
   return (
     <div className="max-w-xl mx-auto">

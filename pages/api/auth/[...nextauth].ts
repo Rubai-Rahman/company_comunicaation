@@ -22,7 +22,7 @@ const authOptions: NextAuthOptions = {
         // const hasuraEndPoint: any = process.env.HASURA_PROJECT_ENDPOINT;
         // const hasuraSecret: any = process.env.HASURA_ADMIN_SECRET;
         // const authsecret: any = process.env.NEXT_AUTH_SECRET;
-        const { data: result }: any = await axios.post(
+        const { data: result }: any = await axios.post (
           process.env.hasuraEndPoint as string,
           {
             query: `
