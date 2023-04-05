@@ -7,7 +7,7 @@ const AllUserPage = () => {
   const deleteUser = useDeleteUser();
   const handleDeleteUser = (id: number) => {
     if (window.confirm("Are you sure you want to delete this user?")) {
-      console.log(id);
+      
       deleteUser.mutate(id);
     }
   };

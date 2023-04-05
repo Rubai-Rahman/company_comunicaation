@@ -22,7 +22,7 @@ const authOptions: NextAuthOptions = {
         // const hasuraEndPoint: any = process.env.HASURA_PROJECT_ENDPOINT;
         // const hasuraSecret: any = process.env.HASURA_ADMIN_SECRET;
         // const authsecret: any = process.env.NEXT_AUTH_SECRET;
-        const { data: result }: any = await axios.post (
+        const { data: result }: any = await axios.post(
           process.env.hasuraEndPoint as string,
           {
             query: `
@@ -41,6 +41,7 @@ const authOptions: NextAuthOptions = {
             headers: {
               "Content-Type": "application/json",
               "x-hasura-admin-secret": process.env.hasuraSecret,
+              
             },
           }
         );
@@ -58,26 +59,28 @@ const authOptions: NextAuthOptions = {
           throw new Error("Incorrect Password");
         }
         //if everything is fine
-       console.log("user", user);
-        return user;
-
+        console.log("user", user);
+        return {
+          email: user.email,
+          id: user.id,
+          name: user.name,
+          role: user.role,
+        };
       },
     }),
   ],
-  
-  callbacks: {
-    // Add the required Hasura claims
-    // https://hasura.io/docs/latest/graphql/core/auth/authentication/jwt/#the-spec
 
-    // Add user ID to the session
+  callbacks: {
+   
 
     async jwt({ token, user }) {
-     // console.log(process.env);
-      console.log(user);
+      // console.log(process.env);
+      console.log("user",user);
       return {
-        ...token,...user,
+        ...token,
+        ...user,
         "https://hasura.io/jwt/claims": {
-          "x-hasura-allowed-roles": ["manager","administrator","member",],
+          "x-hasura-allowed-roles": ["manager", "administrator", "member"],
           "x-hasura-default-role": token.role,
           "x-hasura-role": token.role,
           "x-hasura-user-id": token.sub,
@@ -85,7 +88,7 @@ const authOptions: NextAuthOptions = {
       };
     },
     session: async ({ session, token }: any) => {
-      // console.log("token", token);
+       console.log("token", token);
       const encodedToken = await Jwt.sign(
         token,
 
@@ -95,11 +98,12 @@ const authOptions: NextAuthOptions = {
         }
       );
       //console.log(encodedToken);
-      if (session?.user) {
+      
         //console.log("user Exist");
         session.user.id = token.sub!;
+        session.user.role = token.role!;
         session.jwtToken = encodedToken;
-      }
+      
       // console.log("sesson", session);
       return session;
     },
