@@ -28,7 +28,7 @@ const AllUserPage = () => {
         </tr>
       </thead>
       <tbody>
-        {data.map((item: any) => (
+        {data?.map((item: any) => (
           <tr key={item.id}>
             <td className="border px-4  py-2">{item.id}</td>
             <td className="border px-4 py-2">{item.name}</td>

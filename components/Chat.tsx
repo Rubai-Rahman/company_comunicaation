@@ -79,8 +79,8 @@ const Chat = ({ teamId }: any) => {
         {
           headers: {
             "Content-Type": "application/json",
-            "x-hasura-admin-secret": hasurasecret,
-            authorization: `Bearer ${token}`,
+            //"x-hasura-admin-secret": hasurasecret,
+            Authorization: `Bearer ${token}`,
           },
         }
       );

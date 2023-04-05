@@ -16,12 +16,7 @@ const authOptions: NextAuthOptions = {
           email: string;
           password: string;
         };
-        //console.log("email", email, "password", password);
-        //perform your login logic here
-        //find out user from db
-        // const hasuraEndPoint: any = process.env.HASURA_PROJECT_ENDPOINT;
-        // const hasuraSecret: any = process.env.HASURA_ADMIN_SECRET;
-        // const authsecret: any = process.env.NEXT_AUTH_SECRET;
+
         const { data: result }: any = await axios.post(
           process.env.hasuraEndPoint as string,
           {
@@ -36,13 +31,6 @@ const authOptions: NextAuthOptions = {
                 }
               }
           `,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-              "x-hasura-admin-secret": process.env.hasuraSecret,
-              
-            },
           }
         );
         const user = result.data.users.find(
@@ -71,11 +59,9 @@ const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-   
-
     async jwt({ token, user }) {
       // console.log(process.env);
-      console.log("user",user);
+      console.log("user", user);
       return {
         ...token,
         ...user,
@@ -88,7 +74,7 @@ const authOptions: NextAuthOptions = {
       };
     },
     session: async ({ session, token }: any) => {
-       console.log("token", token);
+      console.log("token", token);
       const encodedToken = await Jwt.sign(
         token,
 
@@ -98,12 +84,12 @@ const authOptions: NextAuthOptions = {
         }
       );
       //console.log(encodedToken);
-      
-        //console.log("user Exist");
-        session.user.id = token.sub!;
-        session.user.role = token.role!;
-        session.jwtToken = encodedToken;
-      
+
+      //console.log("user Exist");
+      session.user.id = token.sub!;
+      session.user.role = token.role!;
+      session.jwtToken = encodedToken;
+
       // console.log("sesson", session);
       return session;
     },

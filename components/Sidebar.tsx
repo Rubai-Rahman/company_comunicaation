@@ -45,7 +45,7 @@ type SidebarProps = {
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
   const router = useRouter();
 
-
+  const { data: session } = useSession();
   const toggleMenu = () => setIsSidebarOpen(!isSidebarOpen);
 
   return (

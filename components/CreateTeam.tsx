@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 
@@ -7,20 +7,33 @@ import { useMutation } from "react-query";
 //import { useCreateUser } from "@/hooks/useCreateUser";
 type TEAM = {
   name: string;
-  admin: string;
+  admin: string |undefined;
 };
 const baseURL: any = process.env.hasuraEndPoint;
-const hasurasecret: any = process.env.hasuraSecret;
 
 const CreateTeam = () => {
-  const { data: session }: any = useSession();
-  let admin = session?.user?.name;
- 
+  const { data: session, status }: any = useSession();
+    const [admin, setAdmin] = useState<string | undefined>(undefined);
+const [team, setTeam] = useState<TEAM>({
+  name: "",
+  admin: "",
+});
+  
+  useEffect(() => {
+    if (session) {
+      setAdmin(session.user.name);
+      setTeam({
+        ...team,
+        admin: session.user.name,
+      });
+    }
+  }, [session]);
+
+
+
   let token = session?.jwtToken;
-  const [team, setTeam] = useState<TEAM>({
-    name: "",
-    admin: admin,
-  });
+  
+
   const { mutate, isLoading, isSuccess, data } = useMutation(
     (data: TEAM) => {
       return axios.post(
@@ -40,8 +53,8 @@ const CreateTeam = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            "x-hasura-admin-secret": hasurasecret,
-            authorization: `Bearer ${token}`,
+            //"x-hasura-admin-secret": hasurasecret,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -50,7 +63,7 @@ const CreateTeam = () => {
       onSuccess: (data) => {
         setTeam({
           name: "",
-          admin: admin,
+          admin:admin,
         });
         alert("Team Created Successfully");
         console.log("Response data:", data.data);
@@ -63,6 +76,7 @@ const CreateTeam = () => {
   // }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    console.log("team", team);
     event.preventDefault();
     await mutate(team);
   };
