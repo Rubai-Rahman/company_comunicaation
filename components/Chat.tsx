@@ -159,6 +159,7 @@ const Chat = ({ teamId }: any) => {
         <input
           type="text"
           placeholder="Type a message"
+          required
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           className="flex-1 rounded-lg p-2 bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"

@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import TeamUsers from "./TeamUsers";
 import { format } from "date-fns";
 import Chat from "./Chat";
+import Link from "next/link";
 type Team = {
   id: string;
   name: string;
@@ -60,7 +61,11 @@ const MyTeam = () => {
                 key={item.id}
                 className="bg-gradient-to-r from-green-500 to-blue-400 hover:bg-opacity-50 transition-colors duration-500"
               >
-                <td className="px-4 py-3 border">{item.name}</td>
+                <td className="px-4 py-3 border">
+                  <Link className="text-cyan-400 " href={`/team/${item.id}`}>
+                    {item.name}
+                  </Link>
+                </td>
                 <td className="px-4 py-3 border">{item.admin}</td>
                 <td className="px-4 py-3 border">
                   {format(
