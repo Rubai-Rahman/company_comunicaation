@@ -12,8 +12,8 @@ const axiosInstance = axios.create({
 });
 
 axiosInstance.interceptors.request.use(async (config) => {
-  const session:any = await getSession();
- console.log(session?.jwtToken);
+  const session: any = await getSession();
+
   if (session?.jwtToken) {
     config.headers["Authorization"] = `Bearer ${session.jwtToken}`;
   }

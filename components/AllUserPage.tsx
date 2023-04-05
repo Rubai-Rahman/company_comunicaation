@@ -25,7 +25,8 @@ const AllUserPage = () => {
     email: string,
     role: string
   ) => {
-    editUser.mutate({ id, name, email, role });
+    console.log(editUser);
+    //editUser.mutate({ id, name, email, role });
     setEditingUser(null);
   };
 
@@ -94,12 +95,14 @@ const AllUserPage = () => {
               <form
                 onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
                   e.preventDefault();
-                  const name = (e.target as HTMLFormElement).elements.name
-                    .value;
-                  const email = (e.target as HTMLFormElement).elements.email
-                    .value;
-                  const role = (e.target as HTMLFormElement).elements.role
-                    .value;
+                  const target = e.target as typeof e.target & {
+                    name: { value: string };
+                    email: { value: string };
+                    role: { value: string };
+                  };
+                  const name = target.name.value;
+                  const email = target.email.value;
+                  const role = target.role.value;
                   handleEditUser(editingUser.id, name, email, role);
                 }}
               >
