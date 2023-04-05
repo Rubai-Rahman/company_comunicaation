@@ -56,7 +56,7 @@ const CreateUserPage = () => {
           //password: "1234",
         });
         alert("User Added Successfully");
-        console.log("Response data:", data.data);
+       
       },
     }
   );

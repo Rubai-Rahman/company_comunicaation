@@ -66,7 +66,7 @@ const [team, setTeam] = useState<TEAM>({
           admin:admin,
         });
         alert("Team Created Successfully");
-        console.log("Response data:", data.data);
+        
       },
     }
   );
@@ -76,7 +76,7 @@ const [team, setTeam] = useState<TEAM>({
   // }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("team", team);
+
     event.preventDefault();
     await mutate(team);
   };

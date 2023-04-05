@@ -22,7 +22,7 @@ const Login = () => {
       redirect: true,
       callbackUrl:'/dashboard'
     });
-    console.log(res);
+    
   };
 
   return (

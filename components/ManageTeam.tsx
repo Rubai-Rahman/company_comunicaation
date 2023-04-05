@@ -19,7 +19,7 @@ const ManageTeam = () => {
 
     return response.data.data;
   });
-console.log(data);
+
   const deleteTeam = useMutation(
     (id: number) => {
       const mutation = `

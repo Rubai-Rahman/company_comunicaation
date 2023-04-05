@@ -61,7 +61,7 @@ const AddParticipant = () => {
       enabled: id ? true : false, // enable the query if teamId exists
     }
   );
-  // console.log("teamData", teamData?.team_members);
+
 
   const {
     mutate,
@@ -100,7 +100,7 @@ const AddParticipant = () => {
           user_id: "",
         });
         alert("Participant Added Successfully");
-        console.log("Response data:", data.data);
+       
       },
     }
   );
@@ -122,7 +122,7 @@ const AddParticipant = () => {
     event.preventDefault();
 
     const existMember = teamData?.team_members?.find((user: any) => {
-      console.log("userId", user?.user_id);
+   
       return user?.user_id == member.user_id;
       // if (user?.user_id == member.user_id) {
       //   alert("user Exist");
@@ -139,7 +139,7 @@ const AddParticipant = () => {
       await mutate(member);
     } ;
 
-    console.log("newMember", member);
+  
   };
 
   return (

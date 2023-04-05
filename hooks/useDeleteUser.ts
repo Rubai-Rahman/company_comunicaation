@@ -15,7 +15,7 @@ const useDeleteUser = (): UseMutationResult<
   const deleteUser = useMutation<DeleteUserResponse, unknown, number>(
  
     (id) => {
-      console.log(id);
+      
       const mutation = `
         mutation ($id: Int!) {
           delete_users_by_pk(id: $id) {
