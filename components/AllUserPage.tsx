@@ -25,8 +25,7 @@ const AllUserPage = () => {
     email: string,
     role: string
   ) => {
-    console.log(editUser);
-    //editUser.mutate({ id, name, email, role });
+    editUser.mutate({ id, name, email, role });
     setEditingUser(null);
   };
 
@@ -67,12 +66,14 @@ const AllUserPage = () => {
               <td className="border px-4 py-2">{item.role}</td>
 
               <td className="border px-4 py-2">
-                <button
-                  className="w-20  rounded-md text-blue-500  hover:bg-blue-600 hover:text-white px-4 py-2 ring-2 ring-blue-600 hover:ring-offset-2"
-                  onClick={() => setEditingUser(item)}
-                >
-                  Edit
-                </button>
+                {item?.role !== "administrator" && (
+                  <button
+                    className="w-20  rounded-md text-blue-500  hover:bg-blue-600 hover:text-white px-4 py-2 ring-2 ring-blue-600 hover:ring-offset-2"
+                    onClick={() => setEditingUser(item)}
+                  >
+                    Edit
+                  </button>
+                )}
               </td>
               <td className="border px-4 py-2 ">
                 <button

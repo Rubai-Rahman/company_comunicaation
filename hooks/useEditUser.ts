@@ -3,7 +3,7 @@ import { useMutation, UseMutationResult } from "react-query";
 
 interface EditUserResponse {
   update_users_by_pk: {
-    id: number;
+    id: number |string;
     name: string;
     email: string;
     role: string;
@@ -39,7 +39,7 @@ const useEditUser = (): UseMutationResult<
     {
       onSuccess: (data) => {
         const editedUser = data.update_users_by_pk;
-        alert(`User ${editedUser.id} updated`);
+        alert(`User updated`);
       },
     }
   );

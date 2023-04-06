@@ -26,8 +26,10 @@ export const useUser = () => {
     {
       onSuccess: () => {
         // Invalidate dependent queries on success
-        queryClient.invalidateQueries("users");
-        queryClient.invalidateQueries("user");
+
+        console.log("data fetching ");
+        // queryClient.invalidateQueries("users");
+        //queryClient.invalidateQueries("user");
       },
     }
   );
