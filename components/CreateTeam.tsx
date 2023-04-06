@@ -1,84 +1,109 @@
 import React, { useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
-
 import { useState } from "react";
 import { useMutation } from "react-query";
-//import { useCreateUser } from "@/hooks/useCreateUser";
+import { useAdmin } from "@/hooks/useAdmin";
+
 type TEAM = {
   name: string;
-  admin: string |undefined;
+  admin: string | undefined;
+  team_members: string | [];
 };
+
 const baseURL: any = process.env.hasuraEndPoint;
 
 const CreateTeam = () => {
-  const { data: session, status }: any = useSession();
-    const [admin, setAdmin] = useState<string | undefined>(undefined);
-const [team, setTeam] = useState<TEAM>({
-  name: "",
-  admin: "",
-});
+  const { data: admins } = useAdmin();
+
+  const adminIds: any = admins?.map((admin: any) => {
+    return { user_id: admin.id };
+  });
   
+  const { data: session, status }: any = useSession();
+  const [admin, setAdmin] = useState<string | undefined>(undefined);
+
+  const [team, setTeam] = useState<TEAM>({
+    name: "",
+    admin: "",
+    team_members: "",
+  });
+
   useEffect(() => {
     if (session) {
       setAdmin(session.user.name);
-      setTeam({
-        ...team,
+      setTeam((prevTeam) => ({
+        ...prevTeam,
         admin: session.user.name,
-      });
+        team_members: adminIds,
+      }));
     }
   }, [session]);
 
-
+  // mutation CreateTeam($team: teams_insert_input!) {
+  //   insert_teams_one(object: $team, team_members: { data: $team_members }) {
+  //     id
+  //     admin
+  //   }
+  // }
 
   let token = session?.jwtToken;
-  
 
-  const { mutate, isLoading, isSuccess, data } = useMutation(
-    (data: TEAM) => {
+  const {
+    mutate,
+    isLoading,
+    error,
+    data: returnValue,
+  } = useMutation(
+    (requestData: any) => {
+      console.log("axiosData", requestData);
       return axios.post(
         baseURL,
         {
-          query: `
-  mutation CreateTeam($team: teams_insert_input!) {
-    insert_teams_one(object: $team) {
-      id,name,admin
-    }
+          query: `mutation MyMutation($data: [team_members_insert_input!] = {}, $admin: String = "", $name: String = "") {
+  insert_teams_one(object: {admin: $admin, name: $name, team_members: {data: $data}}) {
+    id
+    admin
   }
-`,
+}
+
+ `,
           variables: {
-            team,
+            admin: requestData.admin,
+            name: requestData.name,
+            data: requestData.team_members,
           },
         },
         {
           headers: {
             "Content-Type": "application/json",
-            //"x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }
       );
     },
     {
-      onSuccess: (data) => {
+      onSuccess: () => {
         setTeam({
           name: "",
-          admin:admin,
+          admin: admin,
+          team_members: adminIds,
         });
+
+        console.log("error", error, "data", returnValue, "team", team);
         alert("Team Created Successfully");
-        
       },
     }
   );
 
-  // if (isSuccess) {
-  //   alert("Team Created ");
-  // }
-
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-
     event.preventDefault();
-    await mutate(team);
+    console.log("submit", team);
+    await mutate({
+      name: team.name,
+      admin: team.admin,
+      team_members: team.team_members,
+    });
   };
 
   return (

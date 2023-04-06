@@ -75,13 +75,16 @@ const AllUserPage = () => {
                   </button>
                 )}
               </td>
+
               <td className="border px-4 py-2 ">
-                <button
-                  className="w-20  rounded-md text-red-500  hover:bg-red-600 hover:text-white px-4 py-2 ring-2 ring-red-600 hover:ring-offset-2"
-                  onClick={() => handleDeleteUser(item.id)}
-                >
-                  Delete
-                </button>
+                {item?.role !== "administrator" && (
+                  <button
+                    className="w-20  rounded-md text-red-500  hover:bg-red-600 hover:text-white px-4 py-2 ring-2 ring-red-600 hover:ring-offset-2"
+                    onClick={() => handleDeleteUser(item.id)}
+                  >
+                    Delete
+                  </button>
+                )}
               </td>
             </tr>
           ))}

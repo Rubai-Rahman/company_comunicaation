@@ -12,16 +12,23 @@ const TeamMembers: React.FC = () => {
   const { id }: any = router.query;
   let teamId = id;
   const queryClient = useQueryClient();
+
+  
   const { isLoading, error, data } = useQuery(
     ["MyQuery", teamId],
     async () => {
       const query = `
-        query {
-          team_members(where: {team_id: {_eq: "${teamId}"}}) {
-            id
-            name
-          }
-        }`;
+       query MyQuery {
+  team_members(where: {team_id:  {_eq: "${teamId}"}}) {
+    id
+    name
+    team_id
+    user {
+      name
+    }
+  }
+}
+`;
       const response = await axiosInstance.post("", { query });
 
       return response.data.data;
@@ -53,7 +60,7 @@ const TeamMembers: React.FC = () => {
       },
     }
   );
-
+console.log("data",data);
   if (isLoading) {
     return <div>Loading...</div>;
   }
