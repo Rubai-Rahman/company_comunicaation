@@ -67,13 +67,11 @@ const MyTeam = () => {
             {data?.teams.map((item: any) => (
               <tr key={item.id} className="overflow-scroll  ">
                 <td className="px-2 py-3 border">
-                  {role == "member" ? (
-                    <p className="text-cyan-500 ">{item.name}</p>
-                  ) : (
-                    <Link className="text-cyan-500 " href={`/team/${item.id}`}>
-                      {item.name}
-                    </Link>
-                  )}
+                  <p className="text-cyan-500 ">{item.name}</p>
+
+                  <Link className="text-cyan-500 " href={`/team/${item.id}`}>
+                    {item.name}
+                  </Link>
                 </td>
                 <td className="px-2 py-3 border">{item.admin}</td>
                 <td className="px-2 py-3 border text-xs">
