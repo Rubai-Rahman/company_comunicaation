@@ -22,7 +22,11 @@ const hasurasecret: any = process.env.hasuraSecret;
 
 const Chat = ({ teamId }: any) => {
   const { data: session }: any = useSession();
+  let role = session?.user?.role;
+  const userRole = "administrator";
+  const isLinkDisabled = userRole === role;
   const queryClient = useQueryClient();
+
   const messageContainerRef = useRef<HTMLDivElement>(null);
   let token = session?.jwtToken;
   const team_id = teamId;
@@ -108,8 +112,8 @@ const Chat = ({ teamId }: any) => {
   //   editUser.mutate({ id, name, email, role });
   //   setEditingUser(null);
   // };
-  
-  let id = editingUser?.id
+
+  let id = editingUser?.id;
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       deleteMessage.mutate(id);
@@ -180,13 +184,15 @@ const Chat = ({ teamId }: any) => {
                   }
                   <p className="text-gray-800 bg-gray-300 p-2 rounded-lg shadow  mr-4">
                     {message.message}
-                    </p>
+                  </p>
+                  {isLinkDisabled && (
                     <button
-                    className="text-gray-800 text-[11px] mt-2"
-                    onClick={() => setEditingUser(message)}
-                  >
-                    {<CiMenuKebab />}
-                  </button>
+                      className="text-gray-800 text-[11px] mt-2"
+                      onClick={() => setEditingUser(message)}
+                    >
+                      {<CiMenuKebab />}
+                    </button>
+                  )}
                 </div>
 
                 <div className="flex justify-start mb-2">

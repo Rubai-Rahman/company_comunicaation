@@ -1,6 +1,7 @@
 import { signOut, useSession } from "next-auth/react";
 import React, { useState } from "react";
 import { FiMenu } from "react-icons/fi";
+import { CgProfile } from "react-icons/cg";
 
 interface NavbarProps {
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -19,10 +20,11 @@ const handleLogOut = (
 const Navbar: React.FC<NavbarProps> = ({ setIsSidebarOpen, isSidebarOpen }) => {
   const session: any = useSession();
   let name = session?.data?.user?.name;
-
+  const [enableModal, setEnableModal] = useState(false);
   const handleSidebarToggle = () => {
     setIsSidebarOpen((prevState) => !prevState);
   };
+  const handleUserModal = () => {};
 
   return (
     <div className="bg-gray-700 shadow-md w-full">
@@ -39,13 +41,35 @@ const Navbar: React.FC<NavbarProps> = ({ setIsSidebarOpen, isSidebarOpen }) => {
               Log In As: {name}
             </span>
           </div>
+
           <div className="hidden sm:ml-6 sm:flex sm:items-center">
-            <button onClick={handleLogOut} className="text-white">
-              LogOut
+            <button onClick={() => setEnableModal(true)} className="text-white">
+              {<CgProfile />}
             </button>
           </div>
         </div>
       </div>
+      {enableModal && (
+        <div className="fixed inset-0 z-50 flex items-start  justify-end">
+          <div className="bg-gray-300 shadow-lg shadow-gray-800  rounded-lg p-4">
+            <div className="hidden sm:ml-6 sm:flex sm:items-center">
+              <button onClick={handleLogOut} className="text-black">
+                LogOut
+              </button>
+            </div>
+           
+            <div className="flex justify-end">
+              <button
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded mr-2"
+                onClick={() => setEnableModal(false)}
+              >
+                Cancel
+              </button>
+              
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
