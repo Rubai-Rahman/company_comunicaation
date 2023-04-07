@@ -7,7 +7,7 @@ const axiosInstance = axios.create({
   baseURL,
   headers: {
     "Content-Type": "application/json",
-    //"x-hasura-admin-secret": hasurasecret,
+   // "x-hasura-admin-secret": hasurasecret,
   },
 });
 

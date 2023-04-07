@@ -16,6 +16,8 @@ const MyTeam = () => {
   const { data: session }: any = useSession();
   let userId = session?.user?.id;
   let role = session?.user?.role;
+  const userRole = "member";
+  const isLinkDisabled = userRole === role;
 
   const { isLoading, error, data } = useQuery(
     ["MyQuery", userId],
@@ -67,11 +69,13 @@ const MyTeam = () => {
             {data?.teams.map((item: any) => (
               <tr key={item.id} className="overflow-scroll  ">
                 <td className="px-2 py-3 border">
-                  <p className="text-cyan-500 ">{item.name}</p>
-
-                  <Link className="text-cyan-500 " href={`/team/${item.id}`}>
-                    {item.name}
-                  </Link>
+                  {isLinkDisabled ? (
+                    <p className="text-gray-500 ">{item.name}</p>
+                  ) : (
+                    <Link className="text-cyan-500 " href={`/team/${item.id}`}>
+                      {item.name}
+                    </Link>
+                  )}
                 </td>
                 <td className="px-2 py-3 border">{item.admin}</td>
                 <td className="px-2 py-3 border text-xs">
