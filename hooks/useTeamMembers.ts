@@ -1,10 +1,9 @@
 import axiosInstance from "@/utils/hasuraSetup";
 import { useQuery, useQueryClient } from "react-query";
 
-export const useTeamMembers = ( teamId:any) => {
-
+export const useTeamMembers = (teamId: any) => {
   const queryClient = useQueryClient();
-  return  useQuery(
+  return useQuery(
     ["TeamUsersQuery", teamId],
     async () => {
       const query = `
@@ -15,6 +14,7 @@ export const useTeamMembers = ( teamId:any) => {
                         id
                          name
                          email
+                         role
                        }
                        }
               }
@@ -23,7 +23,7 @@ export const useTeamMembers = ( teamId:any) => {
 
       return response.data.data;
     },
-     {
+    {
       enabled: teamId ? true : false, // enable the query if teamId exists
     }
   );

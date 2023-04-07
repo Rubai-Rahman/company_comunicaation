@@ -1,7 +1,8 @@
-import { useQuery, useMutation, useQueryClient } from "react-query";
+import {  useMutation, useQueryClient } from "react-query";
 import axiosInstance from "@/utils/hasuraSetup";
 import { useRouter } from "next/router";
 import { useTeamMembers } from "@/hooks/useTeamMembers";
+;
 
 type TeamMember = {
   id: number;
@@ -13,6 +14,8 @@ const TeamMembers: React.FC = () => {
   const router = useRouter();
   const { id }: any = router.query;
   let teamId = id;
+  
+
   const queryClient = useQueryClient();
 
   const { isLoading, error, data: teamMembers } = useTeamMembers(teamId);
@@ -49,8 +52,6 @@ const TeamMembers: React.FC = () => {
     );
   }
 
-
-
   return (
     <div>
       <h2 className="text-black font-bold text-2xl  ">Team Members:</h2>
@@ -67,14 +68,16 @@ const TeamMembers: React.FC = () => {
               }}
             >
               <span>{member?.user?.name}</span>
-              <button
-                className=" bg-gray-600   hover:bg-[#FF0303]  text-white p-1 rounded-md ring-red-600  ring-2   "
-                onClick={() => {
-                  deleteMember.mutate(member.id);
-                }}
-              >
-                Delete
-              </button>
+              {member?.user?.role !== "administrator" && (
+                <button
+                  className=" bg-gray-600   hover:bg-[#FF0303]  text-white p-1 rounded-md ring-red-600  ring-2   "
+                  onClick={() => {
+                    deleteMember.mutate(member.id);
+                  }}
+                >
+                  Delete
+                </button>
+              )}
             </div>
           </li>
         ))}
