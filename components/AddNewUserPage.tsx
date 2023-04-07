@@ -8,7 +8,7 @@ type User = {
   name: string;
   email: string;
   role: string;
-  //password: string;
+  password: string;
 };
 const baseURL: any = process.env.hasuraEndPoint;
 const hasurasecret: any = process.env.hasuraSecret;
@@ -20,10 +20,16 @@ const CreateUserPage = () => {
     name: "",
     email: "",
     role: "member",
-    // password: "1234",
+    password: "12345",
   });
-  const { mutate, isLoading, isSuccess } = useMutation(
+  const {
+    mutate,
+    isLoading,
+    isSuccess,
+    data: userPostResponse,
+  } = useMutation(
     (data: User) => {
+      console.log(user);
       return axios.post(
         baseURL,
         {
@@ -41,7 +47,7 @@ const CreateUserPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            // "x-hasura-admin-secret": hasurasecret,
+            "x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -53,13 +59,13 @@ const CreateUserPage = () => {
           name: "",
           email: "",
           role: "member",
-          //password: "1234",
+          password: "12345",
         });
         alert("User Added Successfully");
-       
       },
     }
   );
+  console.log("postResponse", userPostResponse);
   const { data: users } = useUser();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -68,13 +74,11 @@ const CreateUserPage = () => {
       return existUser?.email == user.email;
     });
     if (existEmail) {
-      alert("User Already Exist")
+      alert("User Already Exist");
       return;
+    } else {
+      await mutate(user);
     }
-    else {
-    await mutate(user);
-    }
-    
   };
   return (
     <div className="max-w-xl mx-auto">

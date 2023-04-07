@@ -5,9 +5,10 @@ import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import axiosInstance from "@/utils/hasuraSetup";
 import { useRouter } from "next/router";
+import { useUser } from "@/hooks/useUser";
+import { useTeamMembers } from "@/hooks/useTeamMembers";
 
 type User = {
-  name: string;
   team_id: string | number;
   user_id: string | number;
 };
@@ -16,78 +17,57 @@ const hasurasecret: any = process.env.hasuraSecret;
 
 const AddParticipant = () => {
   //get data from db
-  const { isLoading, data: users } = useQuery("MyQuery", async () => {
-    const query = `
-              query  {
-                users {
-                  name,
-                  email,
-                  password,
-                  role,id
-                  
-                }
-              }
-          `;
-    const response = await axiosInstance.post("", { query });
-    return response.data.data.users;
-  });
+  const { isLoading, data: users } = useUser();
 
   const router = useRouter();
+
   const { id }: any = router.query;
+  let teamId = id;
   const { data: session }: any = useSession();
 
   let token = session?.jwtToken;
   const [member, setMember] = useState<User>({
-    name: "",
     team_id: id,
     user_id: "",
   });
-  const { error, data: teamData } = useQuery(
-    ["MyQuery", id],
-    async () => {
-      const query = `
-        query {
-          team_members(where: {team_id: {_eq: "${id}"}}) {
-            id
-            name
-            user_id
-          }
-        }`;
-      const response = await axiosInstance.post("", { query });
-
-      return response.data.data;
-    },
-    {
-      enabled: id ? true : false, // enable the query if teamId exists
-    }
-  );
-
+  const { error, data: teamData } = useTeamMembers(teamId);
 
   const {
     mutate,
     isSuccess,
     data: members,
   } = useMutation(
-    (data: User) => {
+    (member: User) => {
+      console.log("memberbeforesubmit", member);
       return axios.post(
         baseURL,
         {
           query: `
-  mutation AddTeamMember($member: team_members_insert_input!) {
-    insert_team_members_one(object: $member) {
-      team_id,name
+  mutation MyMutation($team_id: Int = "", $user_id: Int = "") {
+  insert_team_members_one(object: {team_id: $team_id, user_id: $user_id}) {
+    id
+    team_id
+    user {
+      name
+      role
+      id
+      email
     }
   }
+}
+
+
 `,
           variables: {
-            member,
+            team_id: member.team_id,
+            user_id: member.user_id,
           },
         },
         {
           headers: {
             "Content-Type": "application/json",
-            //"x-hasura-admin-secret": hasurasecret,
-             Authorization: `Bearer ${token}`,
+            "x-hasura-admin-secret": hasurasecret,
+            Authorization: `Bearer ${token}`,
           },
         }
       );
@@ -95,12 +75,10 @@ const AddParticipant = () => {
     {
       onSuccess: (data) => {
         setMember({
-          name: "",
           team_id: id,
           user_id: "",
         });
         alert("Participant Added Successfully");
-       
       },
     }
   );
@@ -113,35 +91,27 @@ const AddParticipant = () => {
 
     setMember({
       ...member,
-      name: selectedUserName,
+
       user_id: selectedUser?.id || "",
     });
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+console.log(teamData);
     const existMember = teamData?.team_members?.find((user: any) => {
-   
-      return user?.user_id == member.user_id;
-      // if (user?.user_id == member.user_id) {
-      //   alert("user Exist");
-      //   return;
-      // }
-      // else {
-      //  alert("userDont exist");
-      // }
+      console.log(user?.user?.id);
+      return user?.user?.id == member.user_id;
     });
+ 
     if (existMember) {
       alert("user exist select another User ");
       return;
     } else {
       await mutate(member);
-    } ;
-
-  
+    }
   };
-
+  
   return (
     <div className="max-w-xl mx-auto">
       <h1 className="text-3xl font-bold mb-8">Add Team Participant</h1>
@@ -153,7 +123,6 @@ const AddParticipant = () => {
           <select
             id="name"
             name="name"
-            value={member.name}
             onChange={handleNameChange}
             className="border p-2 w-full"
           >

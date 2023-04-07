@@ -1,10 +1,12 @@
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import axiosInstance from "@/utils/hasuraSetup";
 import { useRouter } from "next/router";
+import { useTeamMembers } from "@/hooks/useTeamMembers";
 
 type TeamMember = {
   id: number;
   name: string;
+  user: any;
 };
 
 const TeamMembers: React.FC = () => {
@@ -13,30 +15,7 @@ const TeamMembers: React.FC = () => {
   let teamId = id;
   const queryClient = useQueryClient();
 
-  
-  const { isLoading, error, data } = useQuery(
-    ["MyQuery", teamId],
-    async () => {
-      const query = `
-       query MyQuery {
-  team_members(where: {team_id:  {_eq: "${teamId}"}}) {
-    id
-    name
-    team_id
-    user {
-      name
-    }
-  }
-}
-`;
-      const response = await axiosInstance.post("", { query });
-
-      return response.data.data;
-    },
-    {
-      enabled: teamId ? true : false, // enable the query if teamId exists
-    }
-  );
+  const { isLoading, error, data: teamMembers } = useTeamMembers(teamId);
 
   const deleteMember = useMutation(
     async (memberId: number) => {
@@ -56,23 +35,25 @@ const TeamMembers: React.FC = () => {
     },
     {
       onSuccess: () => {
+        alert("Team Participant Removed");
         queryClient.invalidateQueries(["MyQuery", teamId]);
       },
     }
   );
-console.log("data",data);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
-  if (data?.team_members.length <= 0) {
-    return <h2>This Group Does Not Have any Participant </h2>;
-  }
+  // if (teamMembers?.team_members.length <= 0) {
+  //   return <h2>This Group Does Not Have any Participant </h2>;
+  // }
+
 
   return (
     <div>
       <h2>Team Members:</h2>
       <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
-        {data?.team_members.map((member: TeamMember) => (
+        {teamMembers?.team_members.map((member: TeamMember) => (
           <li key={member.id} style={{ marginBottom: "10px" }}>
             <div
               style={{
@@ -83,7 +64,7 @@ console.log("data",data);
                 borderRadius: "5px",
               }}
             >
-              <span>{member.name}</span>
+              <span>{member?.user?.name}</span>
               <button
                 style={{
                   background: "#6495ED",

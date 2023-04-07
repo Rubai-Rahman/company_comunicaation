@@ -79,7 +79,7 @@ const Chat = ({ teamId }: any) => {
         {
           headers: {
             "Content-Type": "application/json",
-            //"x-hasura-admin-secret": hasurasecret,
+            "x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -115,7 +115,7 @@ const Chat = ({ teamId }: any) => {
           <div className="flex justify-center items-center h-full">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
           </div>
-        ) : messages.length === 0 ? (
+        ) : messages?.length === 0 ? (
           <div className="flex justify-center items-center h-full">
             <p className="text-2xl font-medium text-gray-500">
               No messages yet

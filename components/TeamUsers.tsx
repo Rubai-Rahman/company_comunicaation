@@ -1,28 +1,12 @@
 import { useQuery } from "react-query";
 import React from "react";
 import axiosInstance from "@/utils/hasuraSetup";
+import { useTeamMembers } from "@/hooks/useTeamMembers";
 
 const TeamUsers = ({ teamId }: any) => {
-  const { isLoading, error, data } = useQuery(
-    ["TeamUsersQuery", teamId],
-    async () => {
-      const query = `
-              query  {
-                team_members(where: {team_id: {_eq: "${teamId}"}}) {
-                       id
-                       user {
-                         name
-                         email
-                       }
-                       }
-              }
-          `;
-      const response = await axiosInstance.post("", { query });
-
-      return response.data.data;
-    }
-  );
-
+  console.log(teamId);
+  const { isLoading, error, data } = useTeamMembers(teamId);
+  console.log("teamUsers", data, error);
   if (isLoading) {
     return <div>Loading...</div>;
   }

@@ -12,14 +12,14 @@ type TEAM = {
 };
 
 const baseURL: any = process.env.hasuraEndPoint;
-
+const hasurasecret: any = process.env.hasuraSecret;
 const CreateTeam = () => {
   const { data: admins } = useAdmin();
 
   const adminIds: any = admins?.map((admin: any) => {
     return { user_id: admin.id };
   });
-  
+
   const { data: session, status }: any = useSession();
   const [admin, setAdmin] = useState<string | undefined>(undefined);
 
@@ -77,6 +77,7 @@ const CreateTeam = () => {
         {
           headers: {
             "Content-Type": "application/json",
+            "x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }
