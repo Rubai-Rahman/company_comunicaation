@@ -1,6 +1,5 @@
-import { useQuery } from "react-query";
 import React from "react";
-import axiosInstance from "@/utils/hasuraSetup";
+
 import { useTeamMembers } from "@/hooks/useTeamMembers";
 
 const TeamUsers = ({ teamId }: any) => {
@@ -8,11 +7,15 @@ const TeamUsers = ({ teamId }: any) => {
   const { isLoading, error, data } = useTeamMembers(teamId);
   console.log("teamUsers", data, error);
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   return (
-    <div className="border rounded-lg  bg bg-white shadow-lg   ">
+    <div className="border rounded-lg  bg bg-slate-200  shadow-lg   ">
       <ul className="grid grid-cols-2 gap-4 mx-4">
         {data?.team_members.map((member: any) => (
           <li

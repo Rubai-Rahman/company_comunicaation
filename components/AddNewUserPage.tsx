@@ -29,7 +29,7 @@ const CreateUserPage = () => {
     data: userPostResponse,
   } = useMutation(
     (data: User) => {
-      console.log(user);
+      
       return axios.post(
         baseURL,
         {
@@ -81,9 +81,11 @@ const CreateUserPage = () => {
     }
   };
   return (
-    <div className="max-w-xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">Create User</h1>
-      <form onSubmit={handleSubmit}>
+    <div className="max-w-screen mx-auto h-screen bg-slate-400  ">
+      <h1 className="text-3xl font-bold mb-8 pt-4 text-center  ">
+        Create User
+      </h1>
+      <form className="w-2/3 mx-auto p-10 rounded-md shadow-sm  bg-slate-300  " onSubmit={handleSubmit}>
         <div className="mb-4">
           <label htmlFor="name" className="block font-bold mb-2">
             Name
@@ -128,7 +130,7 @@ const CreateUserPage = () => {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          className=" ring-2 ring-gray-800 text-gray-700 hover:text-white    hover:bg-gray-700  font-bold py-2 px-4 rounded"
           disabled={isLoading}
         >
           {isLoading ? "Creating User..." : "Create User"}

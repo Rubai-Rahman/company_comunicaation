@@ -114,8 +114,8 @@ const CreateTeam = () => {
 
   return (
     <div>
-      <div className="max-w-xl mx-auto mb-9">
-        <h1 className="text-3xl font-bold mb-8">Create A Team</h1>
+      <div className="w-2/3 mx-auto mb-9 bg-gray-400 m-5 p-5 rounded-md shadow-lg  ">
+        <h1 className="text-3xl font-bold mb-8 text-center ">Create A Team</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label htmlFor="name" className="block font-bold mb-2">
@@ -127,13 +127,13 @@ const CreateTeam = () => {
               name="name"
               value={team.name}
               onChange={(e) => setTeam({ ...team, name: e.target.value })}
-              className="border p-2 w-full"
+              className="border p-2 w-full rounded-lg"
             />
           </div>
 
           <button
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+            className=" ring-2 ring-gray-800 text-gray-700 hover:text-white    hover:bg-gray-700  font-bold py-2 px-4 rounded"
             disabled={isLoading}
           >
             {isLoading ? "Creating Team..." : "Create Team"}

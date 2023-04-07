@@ -42,16 +42,18 @@ const TeamMembers: React.FC = () => {
   );
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
-  // if (teamMembers?.team_members.length <= 0) {
-  //   return <h2>This Group Does Not Have any Participant </h2>;
-  // }
+
 
 
   return (
     <div>
-      <h2>Team Members:</h2>
+      <h2 className="text-black font-bold text-2xl  ">Team Members:</h2>
       <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
         {teamMembers?.team_members.map((member: TeamMember) => (
           <li key={member.id} style={{ marginBottom: "10px" }}>
@@ -66,22 +68,7 @@ const TeamMembers: React.FC = () => {
             >
               <span>{member?.user?.name}</span>
               <button
-                style={{
-                  background: "#6495ED",
-                  color: "white",
-                  border: "none",
-                  borderRadius: "9999px",
-                  padding: "5px 10px",
-                  cursor: "pointer",
-                  boxShadow: "0px 0px 0px 3px white",
-                  transition: "box-shadow 0.3s ease-in-out",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.boxShadow = "0px 0px 0px 5px #0066CC";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.boxShadow = "0px 0px 0px 3px #0066CC";
-                }}
+                className=" bg-gray-600   hover:bg-[#FF0303]  text-white p-1 rounded-md ring-red-600  ring-2   "
                 onClick={() => {
                   deleteMember.mutate(member.id);
                 }}

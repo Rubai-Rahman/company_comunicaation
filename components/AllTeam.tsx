@@ -21,25 +21,29 @@ const AllTeam = () => {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   return (
-    <table className="table-auto w-full">
+    <table className="table-auto w-2/3 h-auto mb-28 bg-gray-400 mx-auto  rounded-md   ">
       <thead>
         <tr>
-          <th className="px-4 py-2 text-left">ID</th>
-          <th className="px-4 py-2 text-left">Name</th>
-          <th className="px-4 py-2 text-left">Admin</th>
-          <th className="px-4 py-2 text-left">Crated_At</th>
+         
+          <th className="px-4 py-2  text-justify">Name</th>
+          <th className="px-4 py-2  text-justify">Admin</th>
+          <th className="px-4 py-2  text-justify">Crated_At</th>
         </tr>
       </thead>
       <tbody>
         {data?.teams.map((item: any) => (
           <tr key={item.id}>
-            <td className="border px-4 py-2 text-left">{item.id}</td>
+           
             <td className="border px-4 py-2">
-              <Link className="text-cyan-400 " href={`/team/${item.id}`}>
+              <Link className="text-white " href={`/team/${item.id}`}>
                  {item.name}
               </Link>
             </td>

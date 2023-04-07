@@ -22,10 +22,10 @@ function Layout({ children }: any) {
     return <>{children}</>;
   }
   return (
-    <div className="flex h-screen">
+    <div className="flex h-full">
       {/* Sidebar */}
       <div
-        className={`bg-gray-800 h-screen text-white w-64 ${
+        className={`bg-gray-800 h-[800px]  text-white w-64 ${
           isSidebarOpen ? "" : "hidden"
         } flex-none`}
       >

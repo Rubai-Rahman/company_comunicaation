@@ -14,7 +14,7 @@ const sidebarItems: SidebarItem[] = [
     label: "Dashboard",
     icon: "home",
     route: "/dashboard",
-    authorizedRoles: ["administrator", "member","manager"],
+    authorizedRoles: ["administrator", "member", "manager"],
   },
   {
     label: "AllUser",
@@ -50,7 +50,7 @@ type SidebarProps = {
 const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
   const router = useRouter();
 
-  const { data: session }:any = useSession();
+  const { data: session }: any = useSession();
   const userRole = session?.user?.role;
 
   const toggleMenu = () => setIsSidebarOpen(!isSidebarOpen);
@@ -60,7 +60,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
   );
 
   return (
-    <div className="bg-gray-800 text-white w-64 flex-none h-screen">
+    <div className="bg-grey-800 text-white w-64 flex-none h-60 ">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center space-x-2">
           {isSidebarOpen && (

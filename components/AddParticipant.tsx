@@ -138,7 +138,7 @@ console.log(teamData);
         </div>
         <button
           type="submit"
-          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
+          className=" ring-2 ring-gray-800 text-gray-700 hover:text-white    hover:bg-gray-700  font-bold py-2 px-4 rounded"
           disabled={isLoading}
         >
           {isLoading ? "ADD Participant..." : "ADD Participant"}

@@ -4,10 +4,10 @@ import React from "react";
 
 const createteam = () => {
   return (
-    <>
+    <div className="bg-gray-500 h-screen pt-6   ">
       <CreateTeam />
       <AllTeam />
-    </>
+    </div>
   );
 };
 

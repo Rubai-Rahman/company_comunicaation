@@ -41,29 +41,31 @@ const AllUserPage = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="flex justify-center items-center h-full">
+        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
+      </div>
+    );
   }
 
   return (
-    <div>
+    <div className="h-screen bg-gray-300  ">
       <table className="table-auto w-full bg-slate-300 ">
         <thead className="border-collapse ">
           <tr>
-            <th className="px-4 py-2">ID</th>
-            <th className="px-4 py-2">Name</th>
-            <th className="px-4 py-2">Email</th>
-            <th className="px-4 py-2">Role</th>
-            <th className="px-4 py-2">EditUser</th>
-            <th className="px-4 py-2">DeleteUser</th>
+            <th className="px-4 text-justify   py-2">Name</th>
+            <th className="px-4 text-justify  py-2">Email</th>
+            <th className="px-4 text-justify  py-2">Role</th>
+            <th className="px-4 text-justify  py-2">EditUser</th>
+            <th className="px-4 text-justify  py-2">DeleteUser</th>
           </tr>
         </thead>
         <tbody>
           {data?.map((item: any) => (
             <tr key={item.id}>
-              <td className="border px-4  py-2">{item.id}</td>
-              <td className="border px-4 py-2">{item.name}</td>
-              <td className="border px-4 py-2">{item.email}</td>
-              <td className="border px-4 py-2">{item.role}</td>
+              <td className="border px-4 text-justify  py-2">{item.name}</td>
+              <td className="border px-4 text-justify  py-2">{item.email}</td>
+              <td className="border px-4 text-justify  py-2">{item.role}</td>
 
               <td className="border px-4 py-2">
                 {item?.role !== "administrator" && (
@@ -92,9 +94,9 @@ const AllUserPage = () => {
       </table>
       {editingUser && (
         <>
-          <div className="fixed inset-0 bg-black opacity-50 z-50"></div>
+          <div className="fixed inset-0  bg-black opacity-50 z-50"></div>
           <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="bg-white p-8 rounded-lg shadow-lg">
+            <div className="bg-white p-8 w-96  rounded-lg shadow-lg">
               <h2 className="text-lg font-medium mb-4">Edit User</h2>
               <form
                 onSubmit={(e: React.FormEvent<HTMLFormElement>) => {
@@ -155,7 +157,7 @@ const AllUserPage = () => {
                 <div className="flex justify-end">
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                    className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-800"
                   >
                     Save
                   </button>
