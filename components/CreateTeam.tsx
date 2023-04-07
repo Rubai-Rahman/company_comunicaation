@@ -13,10 +13,11 @@ type TEAM = {
 
 const baseURL: any = process.env.hasuraEndPoint;
 const hasurasecret: any = process.env.hasuraSecret;
+
 const CreateTeam = () => {
   const { data: admins } = useAdmin();
 
-  const adminIds: any = admins?.map((admin: any) => {
+  const adminIds: any = admins?.users?.map((admin: any) => {
     return { user_id: admin.id };
   });
 
@@ -26,7 +27,7 @@ const CreateTeam = () => {
   const [team, setTeam] = useState<TEAM>({
     name: "",
     admin: "",
-    team_members: "",
+    team_members: [],
   });
 
   useEffect(() => {
@@ -39,13 +40,17 @@ const CreateTeam = () => {
       }));
     }
   }, [session]);
-
-  // mutation CreateTeam($team: teams_insert_input!) {
-  //   insert_teams_one(object: $team, team_members: { data: $team_members }) {
-  //     id
-  //     admin
-  //   }
-  // }
+  useEffect(() => {
+    if (admins?.users) {
+      const adminIds = admins?.users?.map((admin: any) => {
+        return { user_id: admin.id };
+      });
+      setTeam((prevTeam) => ({
+        ...prevTeam,
+        team_members: adminIds,
+      }));
+    }
+  }, [admins]);
 
   let token = session?.jwtToken;
 

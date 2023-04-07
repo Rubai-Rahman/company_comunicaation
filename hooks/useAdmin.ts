@@ -7,29 +7,27 @@ export const useAdmin = () => {
     "users",
     async () => {
       const query = `
-      query  {
-        users(where: {role: {_eq: "administrator"}}) {
+     query MyQuery {
+  users(where: {role: {_eq: "administrator"}}) {
     email
+    id
     name
     password
     role
-    id
   }
-      }
+}
+
     `;
       const response = await axiosInstance.post("", { query });
-      if (response.data.errors) {
-        throw new Error(response.data.errors[0].message);
-      }
-      return response.data.data.users;
+
+      return response.data.data;
     },
+
     {
       onSuccess: () => {
         // Invalidate dependent queries on success
-
-        console.log("data fetching ");
-        // queryClient.invalidateQueries("users");
-        //queryClient.invalidateQueries("user");
+        //queryClient.invalidateQueries("users");
+        // queryClient.invalidateQueries("user");
       },
     }
   );
