@@ -85,7 +85,7 @@ const Chat = ({ teamId }: any) => {
         {
           headers: {
             "Content-Type": "application/json",
-            "x-hasura-admin-secret": hasurasecret,
+           // "x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -148,11 +148,11 @@ const Chat = ({ teamId }: any) => {
             message?.user?.id == session?.user.id ? (
               <div key={message.id} className=" self-end  ">
                 <div className="flex align-middle mt-5">
-                  {
+                  {/* {
                     <p className="text-[10px] mt-3     ">
                       {message?.user?.name}{" "}
                     </p>
-                  }
+                  } */}
                   <p className="text-gray-800 bg-cyan-300 p-2 rounded-lg shadow  mr-4">
                     {message.message}
                   </p>
@@ -180,7 +180,13 @@ const Chat = ({ teamId }: any) => {
                   }
                   <p className="text-gray-800 bg-gray-300 p-2 rounded-lg shadow  mr-4">
                     {message.message}
-                  </p>
+                    </p>
+                    <button
+                    className="text-gray-800 text-[11px] mt-2"
+                    onClick={() => setEditingUser(message)}
+                  >
+                    {<CiMenuKebab />}
+                  </button>
                 </div>
 
                 <div className="flex justify-start mb-2">
