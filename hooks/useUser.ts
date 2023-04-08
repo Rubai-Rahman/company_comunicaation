@@ -1,8 +1,8 @@
 import axiosInstance from "@/utils/hasuraSetup";
-import { useQuery, useQueryClient } from "react-query";
+import { useQuery } from "react-query";
 
 export const useUser = () => {
-  const queryClient = useQueryClient();
+  
   return useQuery(
     "users",
     async () => {

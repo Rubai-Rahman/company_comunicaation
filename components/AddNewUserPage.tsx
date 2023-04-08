@@ -16,6 +16,7 @@ const hasurasecret: any = process.env.hasuraSecret;
 const CreateUserPage = () => {
   const { data: session }: any = useSession();
   let token = session?.jwtToken;
+  
   const [user, setUser] = useState<User>({
     name: "",
     email: "",
@@ -47,7 +48,7 @@ const CreateUserPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-          //  "x-hasura-admin-secret": hasurasecret,
+          // "x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }

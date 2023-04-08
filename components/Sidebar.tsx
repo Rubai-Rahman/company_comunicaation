@@ -1,42 +1,48 @@
+import { ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FiMenu } from "react-icons/fi";
+import { MdOutlineSpaceDashboard } from "react-icons/md";
+import { HiOutlineUsers } from "react-icons/hi";
+import { AiOutlineUserAdd } from "react-icons/ai";
+import { RiTeamLine } from "react-icons/ri";
+import { GoOrganization } from "react-icons/go";
 
 type SidebarItem = {
   label: string;
-  icon: string;
-  route: string;
+  icon: string | ReactNode;
+  route: any;
   authorizedRoles?: string[];
 };
 
 const sidebarItems: SidebarItem[] = [
   {
     label: "Dashboard",
-    icon: "home",
+    icon: <MdOutlineSpaceDashboard />,
     route: "/dashboard",
     authorizedRoles: ["administrator", "member", "manager"],
   },
   {
     label: "AllUser",
-    icon: "user-group",
+    icon: <HiOutlineUsers />,
     route: "/alluser",
     authorizedRoles: ["administrator"],
   },
   {
     label: "AddNewUser",
-    icon: "clipboard-list",
+    icon: <AiOutlineUserAdd />,
     route: "/addnewuser",
     authorizedRoles: ["administrator"],
   },
   {
     label: "Create Team",
-    icon: "cog",
+    icon: <RiTeamLine />,
     route: "/createteam",
     authorizedRoles: ["administrator"],
   },
   {
     label: "Manage Team",
-    icon: "cog",
+    icon: <GoOrganization />,
     route: "/manageteam",
     authorizedRoles: ["administrator"],
   },
@@ -80,7 +86,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
               router.pathname === item.route ? "bg-gray-900" : ""
             } flex items-center py-2 px-4 text-gray-400 hover:text-white hover:bg-gray-700`}
           >
-            <FiMenu className="h-5 w-5" name={item.icon} />
+            <p>{item.icon}</p>
             {isSidebarOpen && <span className="ml-4">{item.label}</span>}
           </a>
         ))}

@@ -51,7 +51,7 @@ const MyTeam = () => {
   }
 
   return (
-    <div className="grid grid-cols-3 gap-5 align-middle rounded-md  p-4  bg-slate-300 h-screen">
+    <div className="grid grid-cols-1  gap-5 align-middle rounded-md  p-4  bg-slate-300 h-screen md:grid-cols-1 lg:grid-cols-3  ">
       <div className="bg-slate-400 h-[550px]  p-4 rounded-lg overflow-scroll   overflow-x-hidden ">
         <h1 className="bg-slate-800 text-white p-4 mb-1  text-center text-xl rounded-md shadow-sm">
           My Group{""}

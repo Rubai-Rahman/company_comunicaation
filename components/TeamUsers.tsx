@@ -3,9 +3,9 @@ import React from "react";
 import { useTeamMembers } from "@/hooks/useTeamMembers";
 
 const TeamUsers = ({ teamId }: any) => {
-  console.log(teamId);
+ 
   const { isLoading, error, data } = useTeamMembers(teamId);
-  console.log("teamUsers", data, error);
+ 
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-full">

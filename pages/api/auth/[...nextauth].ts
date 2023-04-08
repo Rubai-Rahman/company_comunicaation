@@ -77,12 +77,13 @@ const authOptions: NextAuthOptions = {
      
       const encodedToken = await Jwt.sign(
         token,
-
+       
         process.env.nextauthSecret as string,
         {
           algorithm: "HS256",
         }
       );
+      
       
       session.user.id = token.sub!;
       session.user.role = token.role!;

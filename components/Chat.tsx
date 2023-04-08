@@ -6,6 +6,7 @@ import axios from "axios";
 import { format } from "date-fns";
 import { AiOutlineSend } from "react-icons/ai";
 import { CiMenuKebab } from "react-icons/ci";
+import { FaEdit } from "react-icons/fa";
 import useMessageDelete from "@/hooks/useMessageDelete";
 
 type Message = {
@@ -34,6 +35,8 @@ const Chat = ({ teamId }: any) => {
   const [message, setMessage] = useState("");
   const deleteMessage = useMessageDelete();
   const [editingUser, setEditingUser]: any = useState(null);
+  const [editingMessage, setEditingMessage]: any = useState(null);
+  const [editedMessage,setEditedMessage] :any = useState(null)
 
   //const [messages, setMessages] = useState<Message[]>([]);
 
@@ -89,7 +92,7 @@ const Chat = ({ teamId }: any) => {
         {
           headers: {
             "Content-Type": "application/json",
-           // "x-hasura-admin-secret": hasurasecret,
+            //"x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -103,16 +106,13 @@ const Chat = ({ teamId }: any) => {
       },
     }
   );
-  // const handleEditUser = (
-  //   id: number,
-  //   name: string,
-  //   email: string,
-  //   role: string
-  // ) => {
-  //   editUser.mutate({ id, name, email, role });
-  //   setEditingUser(null);
-  // };
 
+const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  setEditedMessage(e.target.value);
+  };
+  const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+  }
   let id = editingUser?.id;
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this user?")) {
@@ -120,6 +120,7 @@ const Chat = ({ teamId }: any) => {
     }
     setEditingUser(null);
   };
+
   const handleSend = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await mutate(message);
@@ -152,14 +153,37 @@ const Chat = ({ teamId }: any) => {
             message?.user?.id == session?.user.id ? (
               <div key={message.id} className=" self-end  ">
                 <div className="flex align-middle mt-5">
-                  {/* {
-                    <p className="text-[10px] mt-3     ">
-                      {message?.user?.name}{" "}
-                    </p>
-                  } */}
                   <p className="text-gray-800 bg-cyan-300 p-2 rounded-lg shadow  mr-4">
-                    {message.message}
+                    {editingMessage?.id === message.id ? (
+                      <form onSubmit={handleEditSubmit}>
+                        <input
+                          type="text"
+                          value={editedMessage}
+                          onChange={handleEditChange}
+                          className="w-full bg-transparent border-none focus:ring-0 focus:border-gray-400 outline-none"
+                          autoFocus
+                        />
+                      </form>
+                    ) : (
+                      message.message
+                    )}{" "}
                   </p>
+                  {editingMessage?.id === message.id ? (
+                    <button
+                      className="text-gray-800 text-[11px] mt-2"
+                      
+                    >
+                      Cancel
+                    </button>
+                  ) : (
+                    <button
+                      className="text-gray-800 text-[11px] mt-2"
+                      onClick={() => setEditingMessage(message)}
+                    >
+                      {<FaEdit />}
+                    </button>
+                  )}
+
                   <button
                     className="text-gray-800 text-[11px] mt-2"
                     onClick={() => setEditingUser(message)}
