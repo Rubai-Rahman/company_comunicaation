@@ -8,6 +8,7 @@ import { AiOutlineSend } from "react-icons/ai";
 import { CiMenuKebab } from "react-icons/ci";
 import { FaEdit } from "react-icons/fa";
 import useMessageDelete from "@/hooks/useMessageDelete";
+import useEditMessage from "@/hooks/useEditMessage";
 
 type Message = {
   team_id: number;
@@ -19,7 +20,6 @@ type Message = {
   };
 };
 const baseURL: any = process.env.hasuraEndPoint;
-const hasurasecret: any = process.env.hasuraSecret;
 
 const Chat = ({ teamId }: any) => {
   const { data: session }: any = useSession();
@@ -36,17 +36,15 @@ const Chat = ({ teamId }: any) => {
   const deleteMessage = useMessageDelete();
   const [editingUser, setEditingUser]: any = useState(null);
   const [editingMessage, setEditingMessage]: any = useState(null);
-  const [editedMessage,setEditedMessage] :any = useState(null)
-
-  //const [messages, setMessages] = useState<Message[]>([]);
+  const [editedMessage, setEditedMessage]: any = useState(null);
 
   //query
-  const { isLoading, data } = useQuery(
+  const { isLoading, data, refetch } = useQuery(
     ["MyQuery", teamId],
     async () => {
       const query = `
              query {
-  messages(where: {team_id: {_eq: "${teamId}"}}) {
+  messages(where: {team_id: {_eq: "${teamId}"}},order_by: {id: asc}) {
     id
     message
     user_id
@@ -68,7 +66,7 @@ const Chat = ({ teamId }: any) => {
     }
   );
 
-  const { mutate, isSuccess }: any = useMutation(
+  const { mutate }: any = useMutation(
     (data: Message) => {
       return axios.post(
         baseURL,
@@ -92,7 +90,7 @@ const Chat = ({ teamId }: any) => {
         {
           headers: {
             "Content-Type": "application/json",
-            //"x-hasura-admin-secret": hasurasecret,
+            // "x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -106,19 +104,31 @@ const Chat = ({ teamId }: any) => {
       },
     }
   );
-
-const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  setEditedMessage(e.target.value);
+  const { mutate: editMessage, isSuccess }: any = useEditMessage();
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setEditedMessage(e.target.value);
   };
-  const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  }
+
   let id = editingUser?.id;
   const handleDelete = () => {
     if (window.confirm("Are you sure you want to delete this user?")) {
       deleteMessage.mutate(id);
     }
     setEditingUser(null);
+  };
+  const handleEdit = () => {
+    setEditingMessage(id);
+
+    setEditingUser(null);
+  };
+
+  const handleEditSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await editMessage({ editedMessage, editingMessage });
+    if (isSuccess) {
+      refetch();
+      setEditingMessage(null);
+    }
   };
 
   const handleSend = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -154,7 +164,7 @@ const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               <div key={message.id} className=" self-end  ">
                 <div className="flex align-middle mt-5">
                   <p className="text-gray-800 bg-cyan-300 p-2 rounded-lg shadow  mr-4">
-                    {editingMessage?.id === message.id ? (
+                    {editingMessage == message.id ? (
                       <form onSubmit={handleEditSubmit}>
                         <input
                           type="text"
@@ -165,24 +175,9 @@ const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                         />
                       </form>
                     ) : (
-                      message.message
-                    )}{" "}
+                      message?.message
+                    )}
                   </p>
-                  {editingMessage?.id === message.id ? (
-                    <button
-                      className="text-gray-800 text-[11px] mt-2"
-                      
-                    >
-                      Cancel
-                    </button>
-                  ) : (
-                    <button
-                      className="text-gray-800 text-[11px] mt-2"
-                      onClick={() => setEditingMessage(message)}
-                    >
-                      {<FaEdit />}
-                    </button>
-                  )}
 
                   <button
                     className="text-gray-800 text-[11px] mt-2"
@@ -260,14 +255,17 @@ const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
               <button
                 type="button"
                 className="ml-2 px-4 py-2 bg-gray-300 text-gray-600 rounded-md hover:bg-blue-400  hover:text-white"
-                onClick={() => setEditingUser(null)}
+                onClick={handleEdit}
               >
                 Edit
               </button>
               <button
                 type="button"
                 className="ml-2 px-4 py-2 bg-gray-300 text-gray-600 rounded-md hover:bg-gray-400"
-                onClick={() => setEditingUser(null)}
+                onClick={() => {
+                  setEditingUser(null);
+                  setEditingMessage(null);
+                }}
               >
                 Cancel
               </button>

@@ -48,13 +48,13 @@ const Navbar: React.FC<NavbarProps> = ({ setIsSidebarOpen, isSidebarOpen }) => {
     password: "",
   });
 
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
+  // if (isLoading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  if (!userData) {
-    return <div>No user data available</div>;
-  }
+  // if (!userData) {
+  //   return <div>No user data available</div>;
+  // }
 
   // Access userData properties safely
 

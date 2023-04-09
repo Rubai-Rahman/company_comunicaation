@@ -25,7 +25,7 @@ function Layout({ children }: any) {
     <div className="flex h-full">
       {/* Sidebar */}
       <div
-        className={`bg-gray-800 h-[800px]  text-white w-64 ${
+        className={`bg-gray-800 h-auto text-white w-64 ${
           isSidebarOpen ? "" : "hidden"
         } flex-none`}
       >

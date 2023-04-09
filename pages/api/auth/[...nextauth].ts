@@ -33,6 +33,7 @@ const authOptions: NextAuthOptions = {
           `,
           }
         );
+        console.log(result);
         const user = result.data.users.find(
           (user: any) => user.email === credentials.email
         );

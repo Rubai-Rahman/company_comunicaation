@@ -1,3 +1,19 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  h1 {
+    @apply text-3xl font-bold ;
+  }
+
+}
+
+@layer utilities {
+  .modal-header {
+    @apply text-xl text-gray-500 font-mono;
+  }
+  .delete-modal {
+    @apply p-1 mb-3 ml-auto border-0 bg-red-600 rounded-full h-8 w-8 text-center  justify-center items-center  float-right text-3xl leading-none font-semibold outline-none focus:outline-none;
+  }
+}

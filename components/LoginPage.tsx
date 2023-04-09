@@ -15,6 +15,7 @@ const Login = () => {
     setUser({ ...user, [name]: value });
   };
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    console.log(user);
     event.preventDefault();
     const res = await signIn("credentials", {
       email: user.email,
