@@ -1,14 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useSession } from "next-auth/react";
-import axiosInstance from "@/utils/hasuraSetup";
 import axios from "axios";
 import { format } from "date-fns";
 import { AiOutlineSend } from "react-icons/ai";
 import { CiMenuKebab } from "react-icons/ci";
-import { FaEdit } from "react-icons/fa";
 import useMessageDelete from "@/hooks/useMessageDelete";
 import useEditMessage from "@/hooks/useEditMessage";
+import { createClient, SubscribeMessage } from "graphql-ws";
+
 
 type Message = {
   team_id: number;
@@ -20,6 +20,8 @@ type Message = {
   };
 };
 const baseURL: any = process.env.hasuraEndPoint;
+const hasurasecret: any = process.env.hasuraSecret;
+const WEBSOCKET_ENDPOINT = baseURL.replace(/^http/, "ws");
 
 const Chat = ({ teamId }: any) => {
   const { data: session }: any = useSession();
@@ -37,34 +39,48 @@ const Chat = ({ teamId }: any) => {
   const [editingUser, setEditingUser]: any = useState(null);
   const [editingMessage, setEditingMessage]: any = useState(null);
   const [editedMessage, setEditedMessage]: any = useState(null);
+  //subscribtion
+  useEffect(() => {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+    const client = createClient({
+      url: WEBSOCKET_ENDPOINT,
+      connectionParams: {
+        headers,
+      },
+    });
 
-  //query
-  const { isLoading, data, refetch } = useQuery(
-    ["MyQuery", teamId],
-    async () => {
-      const query = `
-             query {
-  messages(where: {team_id: {_eq: "${teamId}"}},order_by: {id: asc}) {
-    id
+    const subscriptionQuery: any = {
+      query: `
+   subscription MySubscription($_eq: Int = 10) {
+ messages(where: {team_id: {_eq: ${team_id}}}) {
     message
-    user_id
+    id
     team_id
     created_at
-    user {
-      name
-      id
-      role}
-    
   }
 }
-          `;
-      const response = await axiosInstance.post("", { query });
-      return response.data.data;
-    },
-    {
-      enabled: teamId ? true : false,
-    }
-  );
+
+`,
+    };
+
+    const onNext = (data: any) => {
+      console.log("Received data:", data);
+      setMessage(data?.data?.messages);
+    };
+    const onError = (error: any) => {
+      console.error("Subscription error:", error);
+    };
+    const onComplete = () => {
+      console.log("Subscription completed");
+    };
+    const sink = { next: onNext, error: onError, complete: onComplete };
+    const payload = subscriptionQuery;
+    const result = client.subscribe(payload, sink);
+    console.log("result", result);
+  }, []);
+ 
 
   const { mutate }: any = useMutation(
     (data: Message) => {
@@ -126,7 +142,6 @@ const Chat = ({ teamId }: any) => {
     e.preventDefault();
     await editMessage({ editedMessage, editingMessage });
     if (isSuccess) {
-      refetch();
       setEditingMessage(null);
     }
   };
@@ -135,16 +150,17 @@ const Chat = ({ teamId }: any) => {
     event.preventDefault();
     await mutate(message);
   };
-  let messages = data?.messages;
+  console.log("Message",message);
+  // let messages = data?.messages;
   useEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop =
         messageContainerRef.current.scrollHeight;
     }
-  }, [data, messages]);
+  }, [ message]);
   return (
     <div className="flex flex-col border bg-slate-200  shadow-lg border-cyan-500  rounded-xl w-auto h-[450px] ">
-      <div
+      {/* <div
         className="flex-1 flex flex-col overflow-y-auto mx-3"
         ref={messageContainerRef}
       >
@@ -223,7 +239,7 @@ const Chat = ({ teamId }: any) => {
             )
           )
         )}
-      </div>
+      </div> */}
       <form onSubmit={handleSend} className="flex bg-gray-200 p-2">
         <input
           type="text"
