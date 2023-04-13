@@ -9,7 +9,6 @@ import useMessageDelete from "@/hooks/useMessageDelete";
 import useEditMessage from "@/hooks/useEditMessage";
 import { createClient, SubscribeMessage } from "graphql-ws";
 
-
 type Message = {
   team_id: number;
   user_id: number;
@@ -35,13 +34,17 @@ const Chat = ({ teamId }: any) => {
   const team_id = teamId;
 
   const [message, setMessage] = useState("");
+  const [messages, setMessages] = useState<Message[]>([]);
   const deleteMessage = useMessageDelete();
   const [editingUser, setEditingUser]: any = useState(null);
   const [editingMessage, setEditingMessage]: any = useState(null);
   const [editedMessage, setEditedMessage]: any = useState(null);
-  //subscribtion
+  const [isLoading, setIsLoading] = useState(true);
+
+  //subscription
   useEffect(() => {
     const headers = {
+      "x-hasura-admin-secret": hasurasecret,
       Authorization: `Bearer ${token}`,
     };
     const client = createClient({
@@ -58,6 +61,7 @@ const Chat = ({ teamId }: any) => {
     message
     id
     team_id
+    user_id
     created_at
   }
 }
@@ -66,11 +70,12 @@ const Chat = ({ teamId }: any) => {
     };
 
     const onNext = (data: any) => {
-      console.log("Received data:", data);
-      setMessage(data?.data?.messages);
+      setMessages(data?.data?.messages);
+      setIsLoading(false);
     };
     const onError = (error: any) => {
       console.error("Subscription error:", error);
+      setIsLoading(false);
     };
     const onComplete = () => {
       console.log("Subscription completed");
@@ -78,9 +83,7 @@ const Chat = ({ teamId }: any) => {
     const sink = { next: onNext, error: onError, complete: onComplete };
     const payload = subscriptionQuery;
     const result = client.subscribe(payload, sink);
-    console.log("result", result);
-  }, []);
- 
+  }, [team_id]);
 
   const { mutate }: any = useMutation(
     (data: Message) => {
@@ -106,7 +109,7 @@ const Chat = ({ teamId }: any) => {
         {
           headers: {
             "Content-Type": "application/json",
-            // "x-hasura-admin-secret": hasurasecret,
+            "x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -150,17 +153,22 @@ const Chat = ({ teamId }: any) => {
     event.preventDefault();
     await mutate(message);
   };
-  console.log("Message",message);
-  // let messages = data?.messages;
+
+  messages?.map((message: any) => {
+    console.log(message?.user_id);
+    message?.user?.id == session?.user.id
+      ? console.log("working")
+      : console.log("notWorking");
+  });
   useEffect(() => {
     if (messageContainerRef.current) {
       messageContainerRef.current.scrollTop =
         messageContainerRef.current.scrollHeight;
     }
-  }, [ message]);
+  }, [message]);
   return (
     <div className="flex flex-col border bg-slate-200  shadow-lg border-cyan-500  rounded-xl w-auto h-[450px] ">
-      {/* <div
+      <div
         className="flex-1 flex flex-col overflow-y-auto mx-3"
         ref={messageContainerRef}
       >
@@ -176,7 +184,7 @@ const Chat = ({ teamId }: any) => {
           </div>
         ) : (
           messages?.map((message: any) =>
-            message?.user?.id == session?.user.id ? (
+            message?.user_id == session?.user.id ? (
               <div key={message.id} className=" self-end  ">
                 <div className="flex align-middle mt-5">
                   <p className="text-gray-800 bg-cyan-300 p-2 rounded-lg shadow  mr-4">
@@ -239,7 +247,7 @@ const Chat = ({ teamId }: any) => {
             )
           )
         )}
-      </div> */}
+      </div>
       <form onSubmit={handleSend} className="flex bg-gray-200 p-2">
         <input
           type="text"
