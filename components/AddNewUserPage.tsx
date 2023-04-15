@@ -1,5 +1,5 @@
 import { useUser } from "@/hooks/useUser";
-import axios from "axios";
+import axiosInstance from "@/utils/hasuraSetup";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useMutation } from "react-query";
@@ -10,13 +10,12 @@ type User = {
   role: string;
   password: string;
 };
-const baseURL: any = process.env.hasuraEndPoint;
-const hasurasecret: any = process.env.hasuraSecret;
+
 
 const CreateUserPage = () => {
   const { data: session }: any = useSession();
   let token = session?.jwtToken;
-  
+
   const [user, setUser] = useState<User>({
     name: "",
     email: "",
@@ -30,29 +29,18 @@ const CreateUserPage = () => {
     data: userPostResponse,
   } = useMutation(
     (data: User) => {
-      
-      return axios.post(
-        baseURL,
-        {
-          query: `
+      return axiosInstance.post("", {
+        query: `
   mutation AddUser($user: users_insert_input!) {
     insert_users_one(object: $user) {
       id,role,email
     }
   }
 `,
-          variables: {
-            user,
-          },
+        variables: {
+          user,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-           "//-admin-secret": hasurasecret,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      });
     },
     {
       onSuccess: (data) => {
@@ -86,7 +74,10 @@ const CreateUserPage = () => {
       <h1 className="text-3xl font-bold mb-8 pt-4 text-center  ">
         Create User
       </h1>
-      <form className="w-2/3 mx-auto p-10 rounded-md shadow-sm  bg-slate-300  " onSubmit={handleSubmit}>
+      <form
+        className="w-2/3 mx-auto p-10 rounded-md shadow-sm  bg-slate-300  "
+        onSubmit={handleSubmit}
+      >
         <div className="mb-4">
           <label htmlFor="name" className="block font-bold mb-2">
             Name

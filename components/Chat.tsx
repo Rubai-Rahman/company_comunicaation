@@ -44,7 +44,7 @@ const Chat = ({ teamId }: any) => {
   //subscription
   useEffect(() => {
     const headers = {
-      //"x-hasura-admin-secret": hasurasecret,
+      "x-hasura-admin-secret": hasurasecret,
       Authorization: `Bearer ${token}`,
     };
     const client = createClient({
@@ -109,7 +109,7 @@ const Chat = ({ teamId }: any) => {
         {
           headers: {
             "Content-Type": "application/json",
-            //"x-hasura-admin-secret": hasurasecret,
+            "x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }

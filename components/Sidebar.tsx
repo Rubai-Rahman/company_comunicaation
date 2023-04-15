@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, lazy, LazyExoticComponent, Suspense, FC } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FiMenu } from "react-icons/fi";
@@ -7,12 +7,14 @@ import { HiOutlineUsers } from "react-icons/hi";
 import { AiOutlineUserAdd } from "react-icons/ai";
 import { RiTeamLine } from "react-icons/ri";
 import { GoOrganization } from "react-icons/go";
+import Link from "next/link";
 
 type SidebarItem = {
   label: string;
   icon: string | ReactNode;
   route: any;
   authorizedRoles?: string[];
+  component?: LazyExoticComponent<FC>;
 };
 
 const sidebarItems: SidebarItem[] = [
@@ -21,6 +23,7 @@ const sidebarItems: SidebarItem[] = [
     icon: <MdOutlineSpaceDashboard />,
     route: "/dashboard",
     authorizedRoles: ["administrator", "member", "manager"],
+    component: lazy(() => import("./MyTeam")),
   },
   {
     label: "AllUser",
@@ -79,7 +82,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
       </div>
       <nav className="pb-4 pr-4">
         {filteredSidebarItems.map((item) => (
-          <a
+          <Link
             key={item.route}
             href={item.route}
             className={`${
@@ -88,7 +91,7 @@ const Sidebar = ({ isSidebarOpen, setIsSidebarOpen }: SidebarProps) => {
           >
             <p>{item.icon}</p>
             {isSidebarOpen && <span className="ml-4">{item.label}</span>}
-          </a>
+          </Link>
         ))}
       </nav>
     </div>

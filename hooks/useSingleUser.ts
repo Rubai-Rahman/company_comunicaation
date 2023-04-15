@@ -1,5 +1,4 @@
 import axiosInstance from '@/utils/hasuraSetup';
-import React from 'react';
 import { useQuery } from 'react-query';
 
 const useSingleUser = (id:any) => {

@@ -3,10 +3,10 @@ import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useMutation, useQuery } from "react-query";
-import axiosInstance from "@/utils/hasuraSetup";
 import { useRouter } from "next/router";
 import { useUser } from "@/hooks/useUser";
 import { useTeamMembers } from "@/hooks/useTeamMembers";
+import axiosInstance from "@/utils/hasuraSetup";
 
 type User = {
   team_id: string | number;
@@ -38,11 +38,8 @@ const AddParticipant = () => {
     data: members,
   } = useMutation(
     (member: User) => {
-      console.log("memberbeforesubmit", member);
-      return axios.post(
-        baseURL,
-        {
-          query: `
+      return axiosInstance.post("", {
+        query: `
   mutation MyMutation($team_id: Int = "", $user_id: Int = "") {
   insert_team_members_one(object: {team_id: $team_id, user_id: $user_id}) {
     id
@@ -58,19 +55,11 @@ const AddParticipant = () => {
 
 
 `,
-          variables: {
-            team_id: member.team_id,
-            user_id: member.user_id,
-          },
+        variables: {
+          team_id: member.team_id,
+          user_id: member.user_id,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "x-hasura-admin-secret": hasurasecret,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      });
     },
     {
       onSuccess: (data) => {
@@ -98,12 +87,12 @@ const AddParticipant = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-console.log(teamData);
+    console.log(teamData);
     const existMember = teamData?.team_members?.find((user: any) => {
       console.log(user?.user?.id);
       return user?.user?.id == member.user_id;
     });
- 
+
     if (existMember) {
       alert("user exist select another User ");
       return;
@@ -111,7 +100,7 @@ console.log(teamData);
       await mutate(member);
     }
   };
-  
+
   return (
     <div className="max-w-xl mx-auto">
       <h1 className="text-3xl font-bold mb-8">Add Team Participant</h1>
@@ -136,11 +125,7 @@ console.log(teamData);
             ))}
           </select>
         </div>
-        <button
-          type="submit"
-         className=" ring-2 ring-gray-800 text-gray-700 hover:text-white    hover:bg-gray-700  font-bold py-2 px-4 rounded"
-          disabled={isLoading}
-        >
+        <button type="submit" className="button" disabled={isLoading}>
           {isLoading ? "ADD Participant..." : "ADD Participant"}
         </button>
       </form>

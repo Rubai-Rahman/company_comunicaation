@@ -2,6 +2,7 @@ import { useQuery, useMutation } from "react-query";
 import React from "react";
 import axiosInstance from "@/utils/hasuraSetup";
 import Link from "next/link";
+import Loading from "@/reusecomponents/Loading";
 
 const ManageTeam = () => {
   const { isLoading, error, data } = useQuery("MyQuery", async () => {
@@ -42,11 +43,7 @@ const ManageTeam = () => {
     deleteTeam.mutate(id);
   };
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
@@ -54,39 +51,29 @@ const ManageTeam = () => {
       <table className="table-auto w-full ">
         <thead className="bg-gray-800 mt-10 ">
           <tr className="border-collapse">
-            <th className="px-4 py-2 text-center text-white border-0">Name</th>
-            <th className="px-4 py-2 text-center text-white border-0">
-              Add Participant
-            </th>
-            <th className="px-4 py-2 text-center text-white border-0">
-              Remove Participant
-            </th>
-            <th className="px-4 py-2 text-center text-white border-0">
-              Delete Team
-            </th>
+            <th>Name</th>
+            <th>Add Participant</th>
+            <th>Remove Participant</th>
+            <th>Delete Team</th>
           </tr>
         </thead>
         <tbody className="bg-gray-400 shadow-sm pb-28  ">
           {data?.teams.map((item: any) => (
             <tr key={item.id}>
-              <td className="px-4 py-2 text-center text-xl ">{item.name}</td>
-              <td className="px-4 py-2 text-center">
-                <Link className="text-cyan-400" href={`/team/${item.id}`}>
-                  <button className=" ring-2 ring-gray-800 text-gray-700 hover:text-white    hover:bg-gray-700  font-bold py-2 px-4 rounded">
-                    Add Participant
-                  </button>
+              <td>{item.name}</td>
+              <td>
+                <Link href={`/team/${item.id}`}>
+                  <button className="button">Add Participant</button>
                 </Link>
               </td>
               <td className="px-4 py-2 text-center">
-                <Link className="text-cyan-400" href={`/team/${item.id}`}>
-                  <button className=" ring-2 ring-gray-800 text-gray-700 hover:text-white    hover:bg-[#FF0303]  font-bold py-2 px-4 rounded">
-                    Remove Participant
-                  </button>
+                <Link href={`/team/${item.id}`}>
+                  <button className="button">Remove Participant</button>
                 </Link>
               </td>
               <td className="px-4 py-2 text-center">
                 <button
-                  className=" ring-2 ring-red-500 text-gray-700 hover:text-white    hover:bg-[#FF0303]  font-bold py-2 px-4 rounded"
+                  className=" deleteButton"
                   onClick={() => handleDelete(item.id)}
                 >
                   Delete

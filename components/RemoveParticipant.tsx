@@ -1,9 +1,7 @@
-import {  useMutation, useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
 import axiosInstance from "@/utils/hasuraSetup";
 import { useRouter } from "next/router";
 import { useTeamMembers } from "@/hooks/useTeamMembers";
-;
-
 type TeamMember = {
   id: number;
   name: string;
@@ -14,7 +12,6 @@ const TeamMembers: React.FC = () => {
   const router = useRouter();
   const { id }: any = router.query;
   let teamId = id;
-  
 
   const queryClient = useQueryClient();
 
@@ -58,15 +55,7 @@ const TeamMembers: React.FC = () => {
       <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
         {teamMembers?.team_members.map((member: TeamMember) => (
           <li key={member.id} style={{ marginBottom: "10px" }}>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                border: "1px solid #ccc",
-                padding: "10px",
-                borderRadius: "5px",
-              }}
-            >
+            <div className="flex justify-between pt-5 ">
               <span>{member?.user?.name}</span>
               {member?.user?.role !== "administrator" && (
                 <button

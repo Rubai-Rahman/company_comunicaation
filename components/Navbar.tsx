@@ -5,6 +5,7 @@ import { CgProfile } from "react-icons/cg";
 
 import useSingleUser from "@/hooks/useSingleUser";
 import useEditSingleUser from "@/hooks/useEditSingleUser";
+import Loading from "@/reusecomponents/Loading";
 
 interface NavbarProps {
   setIsSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -48,9 +49,9 @@ const Navbar: React.FC<NavbarProps> = ({ setIsSidebarOpen, isSidebarOpen }) => {
     password: "",
   });
 
-  // if (isLoading) {
-  //   return <div>Loading...</div>;
-  // }
+  if (isLoading) {
+    return <Loading/>;
+  }
 
   // if (!userData) {
   //   return <div>No user data available</div>;

@@ -29,7 +29,6 @@ const useEditSingleUser = (): UseMutationResult<
     //{ id: number; name: string; email: string; password: string }
   >(
     (formData) => {
-      console.log("hooks",formData);
       const mutation = `
         mutation ($id: Int!, $name: String!, $email: String!, $password: String!) {
           update_users_by_pk(pk_columns: {id: $id}, _set: {name: $name, email: $email, password: $password}) {

@@ -6,6 +6,7 @@ import TeamUsers from "./TeamUsers";
 import { format } from "date-fns";
 import Chat from "./Chat";
 import Link from "next/link";
+import Loading from "@/reusecomponents/Loading";
 type Team = {
   id: string;
   name: string;
@@ -43,11 +44,7 @@ const MyTeam = () => {
   const [selectedTeam, setSelectedTeam] = useState<Team | undefined>();
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return <Loading />;
   }
 
   return (
@@ -60,7 +57,7 @@ const MyTeam = () => {
           <thead className="text-left text-sm">
             <tr className="">
               <th className="px-2 py-3">Group Name</th>
-              <th className="px-2 py-3">Admin</th>
+
               <th className="px-2 py-3">Created At</th>
               <th className="px-2 py-3">Users</th>
             </tr>
@@ -68,7 +65,7 @@ const MyTeam = () => {
           <tbody>
             {data?.teams.map((item: any) => (
               <tr key={item.id} className="overflow-scroll  ">
-                <td className="px-2 py-3 border">
+                <td>
                   {isLinkDisabled ? (
                     <p className="text-gray-500 ">{item.name}</p>
                   ) : (
@@ -77,18 +74,15 @@ const MyTeam = () => {
                     </Link>
                   )}
                 </td>
-                <td className="px-2 py-3 border">{item.admin}</td>
-                <td className="px-2 py-3 border text-xs">
+
+                <td className="text-xs">
                   {format(
                     new Date(item.created_at),
                     "MMMM dd, yyyy hh:mm:ss a"
                   )}
                 </td>
-                <td className="px-4 py-3 border">
-                  <button
-                    className="text-cyan-500 hover:text-cyan-300 transition-colors duration-500"
-                    onClick={() => setSelectedTeam(item)}
-                  >
+                <td>
+                  <button onClick={() => setSelectedTeam(item)}>
                     View Users
                   </button>
                 </td>

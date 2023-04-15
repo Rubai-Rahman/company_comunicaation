@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useUser } from "@/hooks/useUser";
 import useDeleteUser from "@/hooks/useDeleteUser";
 import useEditUser from "@/hooks/useEditUser";
+import Loading from "@/reusecomponents/Loading";
 
 const AllUserPage = () => {
   const { isLoading, data } = useUser();
@@ -41,11 +42,7 @@ const AllUserPage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-full">
-        <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-gray-900"></div>
-      </div>
-    );
+    return Loading;
   }
 
   return (
@@ -53,24 +50,24 @@ const AllUserPage = () => {
       <table className="table-auto w-full bg-slate-300 ">
         <thead className="border-collapse ">
           <tr>
-            <th className="px-4 text-justify   py-2">Name</th>
-            <th className="px-4 text-justify  py-2">Email</th>
-            <th className="px-4 text-justify  py-2">Role</th>
-            <th className="px-4 text-justify  py-2">EditUser</th>
-            <th className="px-4 text-justify  py-2">DeleteUser</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>EditUser</th>
+            <th>DeleteUser</th>
           </tr>
         </thead>
         <tbody>
           {data?.map((item: any) => (
             <tr key={item.id}>
-              <td className="border px-4 text-justify  py-2">{item.name}</td>
-              <td className="border px-4 text-justify  py-2">{item.email}</td>
-              <td className="border px-4 text-justify  py-2">{item.role}</td>
+              <td>{item.name}</td>
+              <td>{item.email}</td>
+              <td>{item.role}</td>
 
-              <td className="border px-4 py-2">
+              <td>
                 {item?.role !== "administrator" && (
                   <button
-                    className="w-20  rounded-md text-blue-500  hover:bg-blue-600 hover:text-white px-4 py-2 ring-2 ring-blue-600 hover:ring-offset-2"
+                    className="editButton"
                     onClick={() => setEditingUser(item)}
                   >
                     Edit
@@ -78,10 +75,10 @@ const AllUserPage = () => {
                 )}
               </td>
 
-              <td className="border px-4 py-2 ">
+              <td>
                 {item?.role !== "administrator" && (
                   <button
-                    className="w-20  rounded-md text-red-500  hover:bg-red-600 hover:text-white px-4 py-2 ring-2 ring-red-600 hover:ring-offset-2"
+                    className="deleteButton"
                     onClick={() => handleDeleteUser(item.id)}
                   >
                     Delete

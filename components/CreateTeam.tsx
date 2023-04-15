@@ -82,7 +82,7 @@ const CreateTeam = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            // "x-hasura-admin-secret": hasurasecret,
+            "x-hasura-admin-secret": hasurasecret,
             Authorization: `Bearer ${token}`,
           },
         }
@@ -131,11 +131,7 @@ const CreateTeam = () => {
             />
           </div>
 
-          <button
-            type="submit"
-            className=" ring-2 ring-gray-800 text-gray-700 hover:text-white    hover:bg-gray-700  font-bold py-2 px-4 rounded"
-            disabled={isLoading}
-          >
+          <button type="submit" className=" button" disabled={isLoading}>
             {isLoading ? "Creating Team..." : "Create Team"}
           </button>
         </form>
