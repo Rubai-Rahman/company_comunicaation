@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "react-query";
 import { useSession } from "next-auth/react";
-import axios from "axios";
 import { format } from "date-fns";
 import { AiOutlineSend } from "react-icons/ai";
 import { CiMenuKebab } from "react-icons/ci";
 import useMessageDelete from "@/hooks/useMessageDelete";
 import useEditMessage from "@/hooks/useEditMessage";
 import { createClient, SubscribeMessage } from "graphql-ws";
+import axiosInstance from "@/utils/hasuraSetup";
 
 type Message = {
   team_id: number;
@@ -32,7 +32,6 @@ const Chat = ({ teamId }: any) => {
   const messageContainerRef = useRef<HTMLDivElement>(null);
   let token = session?.jwtToken;
   const team_id = teamId;
-
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<Message[]>([]);
   const deleteMessage = useMessageDelete();
@@ -40,6 +39,7 @@ const Chat = ({ teamId }: any) => {
   const [editingMessage, setEditingMessage]: any = useState(null);
   const [editedMessage, setEditedMessage]: any = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  //
 
   //subscription
   useEffect(() => {
@@ -57,7 +57,7 @@ const Chat = ({ teamId }: any) => {
     const subscriptionQuery: any = {
       query: `
    subscription MySubscription($_eq: Int = 10) {
- messages(where: {team_id: {_eq: ${team_id}}}) {
+ messages(where: {team_id: {_eq: ${team_id}}}, order_by: {created_at: asc}) {
     message
     id
     team_id
@@ -87,10 +87,8 @@ const Chat = ({ teamId }: any) => {
 
   const { mutate }: any = useMutation(
     (data: Message) => {
-      return axios.post(
-        baseURL,
-        {
-          query: `
+      return axiosInstance.post(baseURL, {
+        query: `
           mutation AddMessage($message: String!, $user_id: Int!, $team_id: Int!) {
             insert_messages_one(object: { message: $message, user_id: $user_id, team_id: $team_id }) {
               id
@@ -100,20 +98,12 @@ const Chat = ({ teamId }: any) => {
             }
           }
         `,
-          variables: {
-            message,
-            user_id: session?.user.id,
-            team_id: parseInt(team_id as string),
-          },
+        variables: {
+          message,
+          user_id: session?.user.id,
+          team_id: parseInt(team_id as string),
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "x-hasura-admin-secret": hasurasecret,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      });
     },
 
     {
@@ -165,7 +155,8 @@ const Chat = ({ teamId }: any) => {
       messageContainerRef.current.scrollTop =
         messageContainerRef.current.scrollHeight;
     }
-  }, [message]);
+  }, [messages]);
+
   return (
     <div className="flex flex-col border bg-slate-200  shadow-lg border-cyan-500  rounded-xl w-auto h-[450px] ">
       <div

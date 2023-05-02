@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useMutation } from "react-query";
 import { useAdmin } from "@/hooks/useAdmin";
+import axiosInstance from "@/utils/hasuraSetup";
 
 type TEAM = {
   name: string;
@@ -61,11 +62,8 @@ const CreateTeam = () => {
     data: returnValue,
   } = useMutation(
     (requestData: any) => {
-      console.log("axiosData", requestData);
-      return axios.post(
-        baseURL,
-        {
-          query: `mutation MyMutation($data: [team_members_insert_input!] = {}, $admin: String = "", $name: String = "") {
+      return axiosInstance.post(baseURL, {
+        query: `mutation MyMutation($data: [team_members_insert_input!] = {}, $admin: String = "", $name: String = "") {
   insert_teams_one(object: {admin: $admin, name: $name, team_members: {data: $data}}) {
     id
     admin
@@ -73,20 +71,12 @@ const CreateTeam = () => {
 }
 
  `,
-          variables: {
-            admin: requestData.admin,
-            name: requestData.name,
-            data: requestData.team_members,
-          },
+        variables: {
+          admin: requestData.admin,
+          name: requestData.name,
+          data: requestData.team_members,
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            "x-hasura-admin-secret": hasurasecret,
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      });
     },
     {
       onSuccess: () => {
