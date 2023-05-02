@@ -42,7 +42,7 @@ const AllUserPage = () => {
   };
 
   if (isLoading) {
-    return Loading;
+    return <Loading />;
   }
 
   return (
