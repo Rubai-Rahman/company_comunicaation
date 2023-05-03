@@ -9,7 +9,7 @@ type User = {
   name: string;
   email: string;
   role: string;
-  password: string;
+  //password: string;
 };
 
 const baseURL: any = process.env.hasuraEndPoint;
@@ -23,7 +23,7 @@ const CreateUserPage = () => {
     name: "",
     email: "",
     role: "member",
-    password: "12345",
+    //password: "12345",
   });
   const {
     mutate,
@@ -32,7 +32,8 @@ const CreateUserPage = () => {
     data: userPostResponse,
   } = useMutation(
     (data: User) => {
-      
+      console.log("user", user);
+
       return axios.post(baseURL, {
         query: `
   mutation AddUser($user: users_insert_input!) {
@@ -44,9 +45,7 @@ const CreateUserPage = () => {
         variables: {
           user,
         },
-
       });
-      
     },
     {
       onSuccess: (data) => {
@@ -54,7 +53,7 @@ const CreateUserPage = () => {
           name: "",
           email: "",
           role: "member",
-          password: "12345",
+          //password: "12345",
         });
         alert("User Added Successfully");
       },
