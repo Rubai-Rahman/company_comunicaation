@@ -53,9 +53,9 @@ const MyTeam = () => {
         <h1 className="bg-slate-800 text-white p-4 mb-1  text-center text-xl rounded-md shadow-sm">
           My Group{""}
         </h1>
-        <table className=" text-black rounded-lg overflow-scroll     bg-slate-200 ">
-          <thead className="text-left text-sm">
-            <tr className="">
+        <table className=" text-black rounded-2xl overflow-scroll     bg-slate-200 m-auto       ">
+          <thead className="text-sm mt-32  ">
+            <tr>
               <th className="px-2 py-3">Group Name</th>
 
               <th className="px-2 py-3">Created At</th>
@@ -64,7 +64,7 @@ const MyTeam = () => {
           </thead>
           <tbody>
             {data?.teams.map((item: any) => (
-              <tr key={item.id} className="overflow-scroll  ">
+              <tr key={item.id} className="overflow-scroll text-left  ">
                 <td>
                   {isLinkDisabled ? (
                     <p className="text-gray-500 ">{item.name}</p>
@@ -81,7 +81,7 @@ const MyTeam = () => {
                     "MMMM dd, yyyy hh:mm:ss a"
                   )}
                 </td>
-                <td>
+                <td className="text-sm ">
                   <button onClick={() => setSelectedTeam(item)}>
                     View Users
                   </button>

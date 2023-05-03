@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useMutation } from "react-query";

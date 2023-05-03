@@ -3,6 +3,7 @@ import axiosInstance from "@/utils/hasuraSetup";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { useMutation } from "react-query";
+import axios from "axios";
 
 type User = {
   name: string;
@@ -11,6 +12,8 @@ type User = {
   password: string;
 };
 
+const baseURL: any = process.env.hasuraEndPoint;
+const hasurasecret: any = process.env.hasuraSecret;
 
 const CreateUserPage = () => {
   const { data: session }: any = useSession();
@@ -29,7 +32,8 @@ const CreateUserPage = () => {
     data: userPostResponse,
   } = useMutation(
     (data: User) => {
-      return axiosInstance.post("", {
+      
+      return axios.post(baseURL, {
         query: `
   mutation AddUser($user: users_insert_input!) {
     insert_users_one(object: $user) {
@@ -40,7 +44,9 @@ const CreateUserPage = () => {
         variables: {
           user,
         },
+
       });
+      
     },
     {
       onSuccess: (data) => {

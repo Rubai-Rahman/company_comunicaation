@@ -33,7 +33,7 @@ const authOptions: NextAuthOptions = {
           `,
           }
         );
-        console.log(result);
+        
         const user = result.data.users.find(
           (user: any) => user.email === credentials.email
         );
@@ -89,7 +89,7 @@ const authOptions: NextAuthOptions = {
       session.user.id = token.sub!;
       session.user.role = token.role!;
       session.jwtToken = encodedToken;
-
+          
       return session;
     },
   },
